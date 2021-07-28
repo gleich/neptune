@@ -1,6 +1,6 @@
 # Contributing
 
-👋 Welcome to project_name! Thank you for showing interest in contributing to project_name, we would love to have your contribution. Below are some details on how to contribute to project_name. Please read carefully!
+👋 Welcome to neptune! Thank you for showing interest in contributing to neptune, we would love to have your contribution. Below are some details on how to contribute to neptune. Please read carefully!
 
 - [Contributing](#contributing)
   - [🐛 Requesting Features/Reporting Bugs](#-requesting-featuresreporting-bugs)

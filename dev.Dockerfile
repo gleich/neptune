@@ -1,8 +1,8 @@
 FROM golang:1.15
 
 # Meta data:
-LABEL maintainer="project_author_email"
-LABEL description="project_description"
+LABEL maintainer="email@mattglei.ch"
+LABEL description="📜 Notes as a book"
 
 # Copying over all the files:
 COPY . /usr/src/app

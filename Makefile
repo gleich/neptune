@@ -3,15 +3,15 @@
 ##########
 
 build-docker-prod:
-	docker build -t docker_username/project_name:latest .
+	docker build -t mattgleich/neptune:latest .
 build-docker-dev:
-	docker build -f dev.Dockerfile -t docker_username/project_name:test .
+	docker build -f dev.Dockerfile -t mattgleich/neptune:test .
 build-docker-dev-lint:
-	docker build -f dev.lint.Dockerfile -t docker_username/project_name:lint .
+	docker build -f dev.lint.Dockerfile -t mattgleich/neptune:lint .
 build-go:
 	go get -v -t -d ./...
 	go build -v .
-	rm project_name
+	rm neptune
 
 #########
 # Linting
@@ -30,7 +30,7 @@ lint-hadolint:
 	hadolint dev.Dockerfile
 	hadolint dev.lint.Dockerfile
 lint-in-docker: build-docker-dev-lint
-	docker run docker_username/project_name:lint
+	docker run mattgleich/neptune:lint
 
 #########
 # Testing
@@ -40,7 +40,7 @@ test-go:
 	go get -v -t -d ./...
 	go test -v ./...
 test-in-docker: build-docker-dev
-	docker run docker_username/project_name:test
+	docker run mattgleich/neptune:test
 
 ##########
 # Grouping
