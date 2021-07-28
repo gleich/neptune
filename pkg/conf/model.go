@@ -4,8 +4,8 @@ import "time"
 
 // Outline for a config
 type Configuration struct {
-	Name    string
+	Name    string `toml:"name,omitempty"`
 	Author  string
-	started time.Time
+	Started time.Time
 	Format  string
 }

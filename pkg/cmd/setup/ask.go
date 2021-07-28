@@ -2,8 +2,10 @@ package setup
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/AlecAivazis/survey/v2"
 )
@@ -54,5 +56,40 @@ func Ask() (InitQuestionResponses, error) {
 		return InitQuestionResponses{}, err
 	}
 
+	// Asking some basic config questions
+	changeAnytimeMsg := fmt.Sprintf(
+		"It can be changed at anytime using the %v file.",
+		filepath.Join(responses.Location, "neptune.toml"),
+	)
+	questions := []*survey.Question{
+		{
+			Name: "name",
+			Prompt: &survey.Input{
+				Message: "What do you want the name of your neptune project to be?",
+				Help:    "This will be the name of your book." + changeAnytimeMsg,
+			},
+			Validate: survey.Required,
+		},
+		{
+			Name: "author",
+			Prompt: &survey.Input{
+				Message: "What is your full name?",
+				Help:    "This will be the author name included in your book." + changeAnytimeMsg,
+			},
+		},
+		{
+			Name: "format",
+			Prompt: &survey.Select{
+				Message: "What format do you want to write your notes in?",
+				Options: []string{"LaTeX (.tex)", "Markdown (.md)"},
+			},
+		},
+	}
+	err = survey.Ask(questions, &responses.Config)
+	if err != nil {
+		return InitQuestionResponses{}, err
+	}
+
+	responses.Config.Started = time.Now()
 	return responses, nil
 }
