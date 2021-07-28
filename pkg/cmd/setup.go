@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/gleich/neptune/pkg/cmd/setup"
 	"github.com/gleich/neptune/pkg/out"
 	"github.com/spf13/cobra"
@@ -15,6 +17,12 @@ var InitCMD = &cobra.Command{
 		if err != nil {
 			out.Error(err, "Required binary check failed")
 		}
+
+		responses, err := setup.Ask()
+		if err != nil {
+			out.Error(err, "Couldn't ask the user setup questions")
+		}
+		fmt.Println(responses)
 	},
 }
 
