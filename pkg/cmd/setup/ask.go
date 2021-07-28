@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/gleich/neptune/pkg/conf"
 )
 
 // Ask the user a bunch of questions as part of the setup process
@@ -57,9 +58,11 @@ func Ask() (InitQuestionResponses, error) {
 	}
 
 	// Asking some basic config questions
+	fmt.Println("\n-- Configuration Questions --")
+	fmt.Println()
 	changeAnytimeMsg := fmt.Sprintf(
 		"It can be changed at anytime using the %v file.",
-		filepath.Join(responses.Location, "neptune.toml"),
+		filepath.Join(responses.Location, conf.Name),
 	)
 	questions := []*survey.Question{
 		{
