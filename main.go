@@ -1,9 +1,13 @@
 package main
 
 import (
-	"github.com/gleich/logoru"
+	"github.com/gleich/neptune/pkg/cmd"
+	"github.com/gleich/neptune/pkg/out"
 )
 
 func main() {
-	logoru.Success("Program booted up!")
+	err := cmd.RootCMD.Execute()
+	if err != nil {
+		out.Error(err, "Failed to execute root command")
+	}
 }
