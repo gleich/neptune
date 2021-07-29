@@ -16,8 +16,8 @@
 Before contributing please read the [CONTRIBUTING.md file](https://github.com/gleich/neptune/blob/master/CONTRIBUTING.md).
 
 <!-- DO NOT REMOVE - contributor_list:start -->
-## 👥 Contributors
 
+## 👥 Contributors
 
 - **[@gleich](https://github.com/gleich)**
 
