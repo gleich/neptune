@@ -1,7 +1,5 @@
 <!-- DO NOT REMOVE - contributor_list:data:start:["gleich"]:end -->
 
-# Run `init.py`
-
 # neptune
 
 📜 Notes as a book
