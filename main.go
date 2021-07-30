@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/gleich/neptune/pkg/out"
+	"github.com/gleich/statuser/v2"
+)
 
 func main() {
-	fmt.Println("Hello World!")
+	statuser.Emojis = false
+	out.Ok("Done", "wow")
 }
