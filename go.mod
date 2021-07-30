@@ -7,5 +7,6 @@ require (
 	github.com/gleich/lumber v1.1.4
 	github.com/gleich/statuser/v2 v2.5.0
 	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/pelletier/go-toml/v2 v2.0.0-beta.3
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
 )
