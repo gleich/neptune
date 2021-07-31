@@ -13,7 +13,7 @@ import (
 )
 
 // Create a new markdown file
-func File() error {
+func File() (string, error) {
 	var fType string
 	err := survey.AskOne(&survey.Select{
 		Message: "What is the file type?",
@@ -21,17 +21,18 @@ func File() error {
 		Help:    "galaxy → Place for structured thoughts with real folders\nnebulae → random thoughts that are organized by time",
 	}, &fType)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	fmt.Println()
+	var location string
 	switch fType {
 	case "galaxy":
 		createIn := "galaxies"
 		for {
 			galaxies, err := util.ListFoldersIn(createIn)
 			if err != nil {
-				return err
+				return "", err
 			}
 			if len(galaxies) == 0 {
 				break
@@ -46,38 +47,38 @@ func File() error {
 				Options: galaxies,
 			}, &selectedGalaxy)
 			if err != nil {
-				return err
+				return "", err
 			}
 			createIn = filepath.Join(createIn, selectedGalaxy)
 		}
-		err = createMarkdownFile(createIn)
+		location, err = createMarkdownFile(createIn)
 		if err != nil {
-			return err
+			return "", err
 		}
 	case "nebula":
-		return errors.New("Sorry nebulas this is currently no supported")
+		return "", errors.New("Sorry nebulas this is currently no supported")
 	}
 
-	return nil
+	return location, nil
 }
 
 // Ask the user what they want to call the file and then create it
-func createMarkdownFile(location string) error {
+func createMarkdownFile(location string) (string, error) {
 	// Asking for the name of the file
 	var name string
 	err := survey.AskOne(&survey.Input{
 		Message: "Name of the file (without file extension)",
 	}, &name)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	// Making the actual markdown file
 	location = filepath.Join(location, name+".md")
 	err = os.WriteFile(location, []byte{}, 0655)
 	if err != nil {
-		return err
+		return "", err
 	}
 	out.Ok("Created", location)
-	return nil
+	return location, nil
 }
