@@ -10,6 +10,6 @@ func main() {
 	statuser.Emojis = false
 	err := cmds.RootCMD.Execute()
 	if err != nil {
-		out.Problem(err, "Failed to exectue root command")
+		out.Problem(err, "Failed to execute root command")
 	}
 }
