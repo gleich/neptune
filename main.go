@@ -1,18 +1,15 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/gleich/neptune/pkg/conf"
+	"github.com/gleich/neptune/pkg/cmds"
 	"github.com/gleich/neptune/pkg/out"
 	"github.com/gleich/statuser/v2"
 )
 
 func main() {
 	statuser.Emojis = false
-	config, err := conf.Read()
+	err := cmds.RootCMD.Execute()
 	if err != nil {
-		out.Problem(err, "Failed to parse config file")
+		out.Problem(err, "Failed to exectue root command")
 	}
-	fmt.Println(config)
 }
