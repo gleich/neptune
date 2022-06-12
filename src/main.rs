@@ -1,6 +1,6 @@
 use std::{fs::File, io::BufWriter};
 
-use anyhow::Result;
+use chrono::Local;
 use printpdf::{Color, IndirectFontRef, Line, Mm, PdfDocument, PdfLayerReference, Point, Rgb};
 
 fn main() {
@@ -14,7 +14,8 @@ fn main() {
         .expect("Failed to read font");
     white_layer.set_fill_color(Color::Rgb(Rgb::new(255.0, 255.0, 255.0, None)));
 
-    write_name(black_layer, white_layer, &font).expect("Failed to write name");
+    write_name(&black_layer, &white_layer, &font);
+    write_title(&black_layer, &font, "Daily Log");
 
     doc.save(&mut BufWriter::new(
         File::create("main.pdf").expect("Failed to create main.pdf file"),
@@ -24,10 +25,10 @@ fn main() {
 
 const NAME: &str = "Matt Gleich";
 fn write_name(
-    black_layer: PdfLayerReference,
-    white_layer: PdfLayerReference,
+    black_layer: &PdfLayerReference,
+    white_layer: &PdfLayerReference,
     font: &IndirectFontRef,
-) -> Result<()> {
+) {
     white_layer.use_text(NAME, 80.0, Mm(10.0), Mm(815.0), &font);
 
     let points1 = vec![
@@ -46,6 +47,16 @@ fn write_name(
 
     black_layer.set_outline_thickness(0.0);
     black_layer.add_shape(line1);
+}
 
-    Ok(())
+fn write_title(black_layer: &PdfLayerReference, font: &IndirectFontRef, title: &str) {
+    black_layer.use_text(title, 45.0, Mm(140.0), Mm(825.0), &font);
+    let now = Local::now();
+    black_layer.use_text(
+        now.format("%m.%d.%y - %A").to_string(),
+        45.0,
+        Mm(140.0),
+        Mm(811.0),
+        &font,
+    );
 }
