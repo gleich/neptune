@@ -8,3 +8,4 @@ anyhow = "1.0.57"
 chrono = "0.4.19"
 printpdf = { version = "0.5.2", features = ["embedded_images"] }
 image = { version = "0.24.2", features = ["png"] }
+task_log = "0.1.4"

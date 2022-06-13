@@ -88,6 +88,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3d7b894f5411737b7867f4827955924d7c254fc9f4d91a6aad6b097804b1018b"
 
 [[package]]
+name = "colorful"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0bca1619ff57dd7a56b58a8e25ef4199f123e78e503fe1653410350a1b98ae65"
+
+[[package]]
 name = "const_fn"
 version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -535,6 +541,7 @@ dependencies = [
  "chrono",
  "image 0.24.2",
  "printpdf",
+ "task_log",
 ]
 
 [[package]]
@@ -886,6 +893,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "task_log"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e5efd6a12fc6018b3da50a176fec4a98346e5975ded331a5a25b4de4f1a30915"
+dependencies = [
+ "chrono",
+ "colorful",
+ "lazy_static",
 ]
 
 [[package]]

@@ -3,9 +3,10 @@ use std::{fs::File, io::BufWriter};
 use anyhow::{Context, Result};
 use chrono::Local;
 use printpdf::*;
+use task_log::task;
 
 fn main() {
-    let (doc, page1, layer1) = PdfDocument::new("Daily Log #3", Mm(595.0), Mm(842.0), "black");
+    let (doc, page1, layer1) = PdfDocument::new("OpenAPI", Mm(595.0), Mm(842.0), "black");
     let black_layer = doc.get_page(page1).get_layer(layer1);
     let white_layer = doc.get_page(page1).add_layer("white");
     let font = doc
@@ -13,16 +14,26 @@ fn main() {
             File::open("GainsboroughSans-Regular.otf").expect("Failed to read font file"),
         )
         .expect("Failed to read font");
-    white_layer.set_fill_color(Color::Rgb(Rgb::new(255.0, 255.0, 255.0, None)));
+    white_layer.set_fill_color(Color::Greyscale(Greyscale::new(1.0, None)));
 
-    write_name(&black_layer, &white_layer, &font);
-    write_title(&black_layer, &font, "Daily Log");
-    write_logo(black_layer).expect("Failed to write logo");
-
-    doc.save(&mut BufWriter::new(
-        File::create("main.pdf").expect("Failed to create main.pdf file"),
-    ))
-    .expect("Failed to save pdf");
+    task("Writing name", || {
+        write_name(&black_layer, &white_layer, &font);
+    });
+    task("Writing title", || {
+        write_title(&black_layer, &font, "Note");
+    });
+    task("Writing lines", || {
+        write_lines(&black_layer, true);
+    });
+    task("Writing logo", || {
+        write_logo(black_layer).expect("Failed to write logo");
+    });
+    task("Saving PDF", || {
+        doc.save(&mut BufWriter::new(
+            File::create("main.pdf").expect("Failed to create main.pdf file"),
+        ))
+        .expect("Failed to save pdf");
+    });
 }
 
 const NAME: &str = "Matt Gleich";
@@ -71,7 +82,7 @@ fn write_logo(black_layer: PdfLayerReference) -> Result<()> {
     image.add_to_layer(
         black_layer,
         ImageTransform {
-            translate_x: Some(Mm(492.5)),
+            translate_x: Some(Mm(494.0)),
             translate_y: None,
             rotate: None,
             scale_x: Some(0.6),
@@ -80,4 +91,54 @@ fn write_logo(black_layer: PdfLayerReference) -> Result<()> {
         },
     );
     Ok(())
+}
+
+fn write_lines(black_layer: &PdfLayerReference, cornell_style: bool) {
+    let (mut x1, mut x2) = (if cornell_style { 200.0 } else { 100.0 }, 495.0);
+    let spacing = 30;
+    let width = 1.0;
+    let lines = 22;
+    let bottom_margin = 110;
+    if cornell_style {
+        let (note_x1, note_x2) = (160.0, 170.0);
+        let (note_y1, note_y2) = (
+            (1 * spacing + bottom_margin) as f64 - 20.0,
+            (lines * spacing + bottom_margin) as f64,
+        );
+        let line = Line {
+            points: vec![
+                (Point::new(Mm(note_x1), Mm(note_y1)), false),
+                (Point::new(Mm(note_x2), Mm(note_y1)), false),
+                (Point::new(Mm(note_x2), Mm(note_y2)), false),
+                (Point::new(Mm(note_x1), Mm(note_y2)), false),
+            ],
+            is_closed: false,
+            has_fill: true,
+            has_stroke: false,
+            is_clipping_path: false,
+        };
+        black_layer.add_shape(line);
+    }
+    black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.40, None)));
+    for i in 1..lines {
+        let y = (i * spacing + bottom_margin) as f64;
+        if i == lines - 1 && cornell_style {
+            x1 = 350.0;
+            x2 = 495.0;
+        }
+        let line = Line {
+            points: vec![
+                (Point::new(Mm(x1), Mm(y)), false),
+                (Point::new(Mm(x2), Mm(y)), false),
+                (Point::new(Mm(x2), Mm(y + width)), false),
+                (Point::new(Mm(x1), Mm(y + width)), false),
+            ],
+            is_closed: false,
+            has_fill: true,
+            has_stroke: true,
+            is_clipping_path: false,
+        };
+        black_layer.add_shape(line);
+    }
+    black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.0, None)));
 }
