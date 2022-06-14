@@ -4,6 +4,8 @@ use anyhow::{Context, Result};
 use chrono::Local;
 use printpdf::*;
 
+pub fn run() {}
+
 const NAME: &str = "Matt Gleich";
 pub fn name(
     black_layer: &PdfLayerReference,
