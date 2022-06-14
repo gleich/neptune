@@ -10,12 +10,12 @@ pub fn name(
     white_layer: &PdfLayerReference,
     font: &IndirectFontRef,
 ) {
-    white_layer.use_text(NAME, 80.0, Mm(10.0), Mm(815.0), &font);
+    white_layer.use_text(NAME, 80.0, Mm(465.0), Mm(815.0), &font);
     let points1 = vec![
-        (Point::new(Mm(6.0), Mm(810.0)), false),
-        (Point::new(Mm(6.0), Mm(835.0)), false),
-        (Point::new(Mm(133.0), Mm(835.0)), false),
-        (Point::new(Mm(133.0), Mm(810.0)), false),
+        (Point::new(Mm(461.0), Mm(810.0)), false),
+        (Point::new(Mm(461.0), Mm(835.0)), false),
+        (Point::new(Mm(588.0), Mm(835.0)), false),
+        (Point::new(Mm(588.0), Mm(810.0)), false),
     ];
     let line1 = Line {
         points: points1,
@@ -29,12 +29,15 @@ pub fn name(
 }
 
 pub fn title(black_layer: &PdfLayerReference, font: &IndirectFontRef, title: &str) {
-    black_layer.use_text(title, 45.0, Mm(140.0), Mm(825.0), &font);
+    black_layer.begin_text_section();
+    black_layer.end_text_section();
+    let x = 330.0;
+    black_layer.use_text(title, 45.0, Mm(x), Mm(825.0), &font);
     let now = Local::now();
     black_layer.use_text(
         now.format("%m.%d.%y - %A").to_string(),
         45.0,
-        Mm(140.0),
+        Mm(x),
         Mm(811.0),
         &font,
     );
@@ -62,7 +65,10 @@ pub fn logo(black_layer: &PdfLayerReference) -> Result<()> {
 }
 
 pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool) {
-    let (mut x1, mut x2) = (if cornell_style { 200.0 } else { 100.0 }, 550.0);
+    let (mut x1, x2) = (
+        if cornell_style { 200.0 } else { 100.0 },
+        if cornell_style { 550.0 } else { 495.0 },
+    );
     let spacing = 30;
     let width = 1.0;
     let lines = 22;
@@ -91,8 +97,8 @@ pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool) {
     for i in 1..lines {
         let y = (i * spacing + bottom_margin) as f64;
         if i == lines - 1 && cornell_style {
-            x1 = 350.0;
-            x2 = 495.0;
+            x1 = 400.0;
+            black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.0, None)));
         }
         let line = Line {
             points: vec![
@@ -109,8 +115,4 @@ pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool) {
         black_layer.add_shape(line);
     }
     black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.0, None)));
-}
-
-pub fn page_number(page: usize, black_layer: &PdfLayerReference, font: &IndirectFontRef) {
-    black_layer.use_text(page.to_string(), 45.0, Mm(10.0), Mm(10.0), &font);
 }
