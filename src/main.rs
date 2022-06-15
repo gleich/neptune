@@ -1,15 +1,12 @@
-use std::{fs::File, io::BufWriter};
-
 mod cli;
+mod cmd;
 mod document;
-
-use printpdf::*;
-use task_log::task;
+mod write;
 
 fn main() {
     let matches = cli::setup().get_matches();
     match matches.subcommand() {
-        Some(("note", _)) => {}
+        Some(("daily-log", _)) => cmd::daily_log::run(),
         _ => unreachable!(),
     }
 }

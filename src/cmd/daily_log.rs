@@ -1,33 +1,18 @@
-use std::fs::File;
+use std::{fs::File, thread, time::Duration};
 
 use anyhow::{Context, Result};
 use chrono::Local;
 use printpdf::*;
 
-pub fn run() {}
+use crate::{document::Document, write};
 
-const NAME: &str = "Matt Gleich";
-pub fn name(
-    black_layer: &PdfLayerReference,
-    white_layer: &PdfLayerReference,
-    font: &IndirectFontRef,
-) {
-    white_layer.use_text(NAME, 80.0, Mm(465.0), Mm(815.0), &font);
-    let points1 = vec![
-        (Point::new(Mm(461.0), Mm(810.0)), false),
-        (Point::new(Mm(461.0), Mm(835.0)), false),
-        (Point::new(Mm(588.0), Mm(835.0)), false),
-        (Point::new(Mm(588.0), Mm(810.0)), false),
-    ];
-    let line1 = Line {
-        points: points1,
-        is_closed: true,
-        has_fill: true,
-        has_stroke: true,
-        is_clipping_path: false,
-    };
-    black_layer.set_outline_thickness(0.0);
-    black_layer.add_shape(line1);
+pub fn run() {
+    let document = Document::new("Name").expect("Failed to create new document");
+    write::giant_date(&document, Mm(45.0), Mm(640.0));
+    write::days(&document, Mm(45.0), Mm(610.0));
+    write::logo(&document, Mm(390.0), Mm(640.0), 0.95);
+    lines(&document.black_layer, false, 19);
+    document.save().expect("Failed to save document");
 }
 
 pub fn title(black_layer: &PdfLayerReference, font: &IndirectFontRef, title: &str) {
@@ -45,36 +30,14 @@ pub fn title(black_layer: &PdfLayerReference, font: &IndirectFontRef, title: &st
     );
 }
 
-pub fn logo(black_layer: &PdfLayerReference) -> Result<()> {
-    let mut image = File::open("logo.jpg").context("Failed to read logo.png file")?;
-    let image = Image::try_from(
-        image_crate::codecs::jpeg::JpegDecoder::new(&mut image)
-            .context("Failed to decode png logo")?,
-    )
-    .context("Failed to convert codecs to Image")?;
-    image.add_to_layer(
-        black_layer.to_owned(),
-        ImageTransform {
-            translate_x: Some(Mm(494.0)),
-            translate_y: None,
-            rotate: None,
-            scale_x: Some(0.6),
-            scale_y: Some(0.6),
-            dpi: None,
-        },
-    );
-    Ok(())
-}
-
-pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool) {
+pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool, lines: usize) {
     let (mut x1, x2) = (
         if cornell_style { 200.0 } else { 100.0 },
         if cornell_style { 550.0 } else { 495.0 },
     );
     let spacing = 30;
     let width = 1.0;
-    let lines = 22;
-    let bottom_margin = 110;
+    let bottom_margin = 25;
     if cornell_style {
         let (note_x1, note_x2) = (160.0, 170.0);
         let (note_y1, note_y2) = (

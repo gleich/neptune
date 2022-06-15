@@ -1,1 +1,1 @@
-pub mod note;
+pub mod daily_log;

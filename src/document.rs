@@ -7,17 +7,18 @@ use printpdf::{
 };
 
 pub struct Document {
-    name: String,
-    document: PdfDocumentReference,
-    first_page_index: PdfPageIndex,
-    first_page_reference: PdfPageReference,
-    title_font: IndirectFontRef,
-    black_layer: PdfLayerReference,
-    white_layer: PdfLayerReference,
+    pub name: String,
+    pub document: PdfDocumentReference,
+    pub first_page_index: PdfPageIndex,
+    pub first_page_reference: PdfPageReference,
+    pub title_font: IndirectFontRef,
+    pub giant_font: IndirectFontRef,
+    pub black_layer: PdfLayerReference,
+    pub white_layer: PdfLayerReference,
 }
 
 impl Document {
-    pub fn create(name: &str) -> Result<Self> {
+    pub fn new(name: &str) -> Result<Self> {
         let (doc, first_page_index, layer1) = PdfDocument::new(name, Mm(595.0), Mm(842.0), "black");
         let first_page_reference = doc.get_page(first_page_index);
         let title_font = doc
@@ -25,9 +26,13 @@ impl Document {
                 File::open("GainsboroughSans-Regular.otf").context("Failed to read font file")?,
             )
             .context("Failed to read font")?;
+        let giant_font = doc
+            .add_external_font(File::open("cmunti.ttf").context("Failed to read font file")?)
+            .context("Failed to read font")?;
         let black_layer = first_page_reference.get_layer(layer1);
         let white_layer = first_page_reference.add_layer("white");
 
+        black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.0, None)));
         white_layer.set_fill_color(Color::Greyscale(Greyscale::new(1.0, None)));
 
         Ok(Self {
@@ -36,6 +41,7 @@ impl Document {
             first_page_index,
             first_page_reference,
             title_font,
+            giant_font,
             black_layer,
             white_layer,
         })
@@ -43,9 +49,11 @@ impl Document {
 
     pub fn save(self) -> Result<()> {
         let filename = format!("{}.pdf", self.name);
-        self.document.save(&mut BufWriter::new(
-            File::create(&filename).expect(&format!("Failed to create {}", &filename)),
-        ));
+        self.document
+            .save(&mut BufWriter::new(
+                File::create(&filename).expect(&format!("Failed to create {}", &filename)),
+            ))
+            .context("Failed to save document")?;
         Ok(())
     }
 }
