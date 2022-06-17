@@ -1,4 +1,8 @@
-use std::{fs::File, io::BufWriter};
+use std::{
+    fs::{self, File},
+    io::BufWriter,
+    process::Command,
+};
 
 use anyhow::{Context, Result};
 use printpdf::{
@@ -8,6 +12,7 @@ use printpdf::{
 
 pub struct Document {
     pub name: String,
+    pub filename: String,
     pub document: PdfDocumentReference,
     pub first_page_index: PdfPageIndex,
     pub first_page_reference: PdfPageReference,
@@ -17,9 +22,12 @@ pub struct Document {
     pub white_layer: PdfLayerReference,
 }
 
+pub const WIDTH: Mm = Mm(595.0);
+pub const HEIGHT: Mm = Mm(842.0);
+
 impl Document {
     pub fn new(name: &str) -> Result<Self> {
-        let (doc, first_page_index, layer1) = PdfDocument::new(name, Mm(595.0), Mm(842.0), "black");
+        let (doc, first_page_index, layer1) = PdfDocument::new(name, WIDTH, HEIGHT, "black");
         let first_page_reference = doc.get_page(first_page_index);
         let title_font = doc
             .add_external_font(
@@ -37,6 +45,7 @@ impl Document {
 
         Ok(Self {
             name: name.to_string(),
+            filename: format!("{}.pdf", name),
             document: doc,
             first_page_index,
             first_page_reference,
@@ -47,13 +56,25 @@ impl Document {
         })
     }
 
-    pub fn save(self) -> Result<()> {
-        let filename = format!("{}.pdf", self.name);
+    pub fn upload(self, folder: String) -> Result<()> {
         self.document
             .save(&mut BufWriter::new(
-                File::create(&filename).expect(&format!("Failed to create {}", &filename)),
+                File::create(&self.filename)
+                    .expect(&format!("Failed to create {}", &self.filename)),
             ))
             .context("Failed to save document")?;
+
+        Command::new("rmapi")
+            .arg("put")
+            .arg(&self.filename)
+            .arg(folder)
+            .output()
+            .context("Failed to run upload command")?;
+
+        fs::remove_file(self.filename)
+            .context("Failed to remove file after upload")
+            .context("Failed to delete pdf")?;
+
         Ok(())
     }
 }
