@@ -6,5 +6,6 @@ pub fn setup() -> Command<'static> {
         .author("Matt Gleich <email@mattglei.ch>")
         .about("PDF document generator")
         .arg_required_else_help(true)
-        .subcommand(Command::new("daily-log").about("Generate daily log PDF"))
+        .subcommand(Command::new("daily-log").about("Generate daily log"))
+        .subcommand(Command::new("note").about("Generate note"))
 }
