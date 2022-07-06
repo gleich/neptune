@@ -4,7 +4,7 @@ use std::{
     process::Command,
 };
 
-use anyhow::{Context, Result};
+use anyhow::{ensure, Context, Result};
 use printpdf::{
     Color, Greyscale, IndirectFontRef, Mm, PdfDocument, PdfDocumentReference, PdfLayerReference,
     PdfPageIndex, PdfPageReference,
@@ -64,12 +64,15 @@ impl Document {
             ))
             .context("Failed to save document")?;
 
-        Command::new("rmapi")
+        let mut process = Command::new("rmapi")
             .arg("put")
             .arg(&self.filename)
             .arg(folder)
-            .output()
-            .context("Failed to run upload command")?;
+            .spawn()
+            .context("Failed to spawn process to upload document")?;
+        process.stderr.take();
+        let status = process.wait().context("Failed to upload document")?;
+        ensure!(status.success());
 
         fs::remove_file(self.filename)
             .context("Failed to remove file after upload")
