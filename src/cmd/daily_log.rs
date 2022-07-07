@@ -12,7 +12,7 @@ pub fn run() {
     let now = Local::now();
 
     let document = Document::new(
-        &now.format(&format!("%e{} (%A)", Ordinal(now.day()).suffix()))
+        &now.format(&format!("%d{} (%A)", Ordinal(now.day()).suffix()))
             .to_string(),
     )
     .expect("Failed to create new document");
