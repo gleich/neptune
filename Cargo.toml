@@ -4,9 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.57"
+anyhow = { version = "1.0.57", features = [] }
 chrono = "0.4.19"
-clap = "3.2.1"
 dialoguer = { version = "0.10.1", features = ["fuzzy-select"] }
 ordinal = "0.3.2"
 printpdf = { version = "0.5.2", features = ["embedded_images"] }
