@@ -70,7 +70,7 @@ impl Document {
             .arg(folder)
             .spawn()
             .context("Failed to spawn process to upload document")?;
-        process.stderr.take();
+        process.stdout.take();
         let status = process.wait().context("Failed to upload document")?;
         ensure!(status.success());
 

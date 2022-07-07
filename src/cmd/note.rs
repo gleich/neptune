@@ -60,7 +60,7 @@ pub fn ask() -> Result<(String, String)> {
         .interact_text()
         .context("Failed to ask user for name of document")?;
 
-    let folders = ["Math", "Stainless", "Coding"];
+    let folders = ["Math", "Stainless", "Coding", "Morning Brew"];
     let folder = folders[FuzzySelect::with_theme(&theme)
         .with_prompt("Folder")
         .items(&folders)

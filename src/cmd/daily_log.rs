@@ -5,8 +5,13 @@ use task_log::task;
 
 use crate::{
     document::{Document, HEIGHT, WIDTH},
-    write,
+    write, auth::NeptuneToken,
 };
+
+#[post("/daily-log")]
+pub fn route(_token: NeptuneToken) -> &'static str {
+    "Hello World!"
+}
 
 pub fn run() {
     let now = Local::now();
