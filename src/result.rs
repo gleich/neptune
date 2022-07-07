@@ -1,4 +1,4 @@
-use rocket::response::{Responder, self};
+use rocket::response::{self, Responder};
 
 pub struct Error(anyhow::Error);
 pub type Result<T = ()> = std::result::Result<T, Error>;

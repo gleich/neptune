@@ -2,11 +2,12 @@ use anyhow::Context;
 use chrono::{Datelike, Local};
 use ordinal::Ordinal;
 use printpdf::*;
-use task_log::task;
 
 use crate::{
+    auth::NeptuneToken,
     document::{Document, HEIGHT, WIDTH},
-    write, auth::NeptuneToken, result::Result,
+    result::Result,
+    write,
 };
 
 #[post("/daily-log")]
