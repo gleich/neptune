@@ -7,7 +7,7 @@ RUN cargo build --release
 
 FROM golang:1.18
 
-COPY --from=builder /app/target/release/neptune .
+COPY --from=builder /app/target/release/neptune /bin/
 COPY --from=builder /app/assets .
 
 # install rmapi
