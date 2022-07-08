@@ -109,7 +109,7 @@ pub fn giant_date(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) -> f
 }
 
 pub fn logo(document: &Document, x: Mm, y: Mm, scale: f64) -> Result<()> {
-    let mut image = File::open("logo.jpg").context("Failed to read logo.png file")?;
+    let mut image = File::open("assets/logo.jpg").context("Failed to read logo.png file")?;
     let image = Image::try_from(
         image_crate::codecs::jpeg::JpegDecoder::new(&mut image)
             .context("Failed to decode png logo")?,
