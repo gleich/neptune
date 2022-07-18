@@ -31,7 +31,8 @@ impl Document {
         let first_page_reference = doc.get_page(first_page_index);
         let title_font = doc
             .add_external_font(
-                File::open("assets/GainsboroughSans-Regular.otf").context("Failed to read font file")?,
+                File::open("assets/GainsboroughSans-Regular.otf")
+                    .context("Failed to read font file")?,
             )
             .context("Failed to read font")?;
         let giant_font = doc

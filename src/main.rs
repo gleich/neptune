@@ -4,7 +4,7 @@ extern crate rocket;
 use std::{env, fs, path::PathBuf};
 
 use anyhow::Result;
-use rocket::build;
+use rocket::Config;
 
 mod auth;
 mod cmd;
@@ -15,7 +15,8 @@ mod write;
 #[launch]
 fn rocket() -> _ {
     setup_rmapi().expect("Failed to setup rmapi");
-    build().mount("/", routes![cmd::daily_log::route])
+    let config = Config::figment().merge(("address", "0.0.0.0"));
+    rocket::custom(config).mount("/", routes![cmd::daily_log::route])
 }
 
 fn setup_rmapi() -> Result<()> {
@@ -27,5 +28,6 @@ fn setup_rmapi() -> Result<()> {
         config_folder.join("rmapi.conf"),
         format!("devicetoken: {}\nusertoken: {}\n", device_token, user_token),
     )?;
+    println!("Setup RMAPI");
     Ok(())
 }
