@@ -11,14 +11,13 @@ use crate::{
 };
 
 #[post("/daily-log")]
-pub fn route(_token: NeptuneToken) -> Result<()> {
+pub fn route(_token: NeptuneToken) -> Result<String> {
     let now = Local::now();
+    let name = &now
+        .format(&format!("%d{} (%A)", Ordinal(now.day()).suffix()))
+        .to_string();
 
-    let document = Document::new(
-        &now.format(&format!("%d{} (%A)", Ordinal(now.day()).suffix()))
-            .to_string(),
-    )
-    .context("Failed to create new document")?;
+    let document = Document::new(name).context("Failed to create new document")?;
 
     // generating document
     write::giant_date(&document, Mm(45.0), Mm(640.0), now);
@@ -41,5 +40,5 @@ pub fn route(_token: NeptuneToken) -> Result<()> {
     document
         .upload(now.format("/Daily Logs/%B/").to_string())
         .context("Failed to upload document")?;
-    Ok(())
+    Ok(format!("Created daily log: {}", name))
 }
