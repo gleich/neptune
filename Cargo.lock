@@ -729,12 +729,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "inflections"
-version = "1.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a257582fdcde896fd96463bf2d40eefea0580021c0712a0e2b028b60b47a837a"
-
-[[package]]
 name = "inlinable_string"
 version = "0.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -933,7 +927,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
- "inflections",
  "ordinal",
  "printpdf",
  "rocket",

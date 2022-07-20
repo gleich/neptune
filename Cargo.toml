@@ -10,4 +10,3 @@ ordinal = "0.3.2"
 printpdf = { version = "0.5.2", features = ["embedded_images"] }
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 serde = { version = "1.0.138", features = ["derive"] }
-inflections = "1.1.1"
