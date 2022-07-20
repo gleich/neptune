@@ -6,9 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = { version = "1.0.57", features = [] }
 chrono = "0.4.19"
-dialoguer = { version = "0.10.1", features = ["fuzzy-select"] }
 ordinal = "0.3.2"
 printpdf = { version = "0.5.2", features = ["embedded_images"] }
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 serde = { version = "1.0.138", features = ["derive"] }
-task_log = "0.1.4"

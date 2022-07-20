@@ -16,7 +16,7 @@ mod write;
 fn rocket() -> _ {
     setup_rmapi().expect("Failed to setup rmapi");
     let config = Config::figment().merge(("address", "0.0.0.0"));
-    rocket::custom(config).mount("/", routes![cmd::daily_log::route])
+    rocket::custom(config).mount("/", routes![cmd::daily_log::route, cmd::note::route])
 }
 
 fn setup_rmapi() -> Result<()> {
