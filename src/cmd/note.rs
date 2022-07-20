@@ -43,5 +43,5 @@ pub fn route(_token: NeptuneToken, folder: String, name: String) -> Result<Strin
     document
         .upload(format!("/Notes/{}", folder))
         .expect("Failed to upload document");
-    Ok(name)
+    Ok(format!("Created {} in {}", name, folder))
 }
