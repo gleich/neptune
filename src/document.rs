@@ -66,13 +66,22 @@ impl Document {
             .context("Failed to save document")?;
 
         let mut process = Command::new("rmapi")
+            .arg("mkdir")
+            .arg(&folder)
+            .spawn()
+            .context("Failed to spawn process to make parent directory")?;
+        process.stdout.take();
+        let mut status = process.wait().context("Failed to make parent directory")?;
+        ensure!(status.success());
+
+        process = Command::new("rmapi")
             .arg("put")
             .arg(&self.filename)
-            .arg(folder)
+            .arg(&folder)
             .spawn()
             .context("Failed to spawn process to upload document")?;
         process.stdout.take();
-        let status = process.wait().context("Failed to upload document")?;
+        status = process.wait().context("Failed to make parent directory")?;
         ensure!(status.success());
 
         fs::remove_file(self.filename)
