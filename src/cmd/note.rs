@@ -12,7 +12,7 @@ use crate::{
 
 #[derive(Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct InputData {
+pub struct InputData {
     pub name: String,
     pub folder: String,
 }
