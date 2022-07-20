@@ -8,7 +8,7 @@ use crate::{
     write,
 };
 
-#[post("/note/<folder>/<name>")]
+#[post("/note?<folder>&<name>")]
 pub fn route(_token: NeptuneToken, folder: String, name: String) -> Result<String> {
     let now = Local::now();
     let document = Document::new(&name).expect("Failed to create document");
