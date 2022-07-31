@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = { version = "1.0.57", features = [] }
 chrono = "0.4.19"
+lazy_static = "1.4.0"
 ordinal = "0.3.2"
 printpdf = { version = "0.5.2", features = ["embedded_images"] }
 rocket = { version = "0.5.0-rc.2", features = ["json"] }

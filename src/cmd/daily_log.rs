@@ -23,7 +23,7 @@ pub fn route(_token: NeptuneToken) -> Result<String> {
     write::giant_date(&document, Mm(45.0), Mm(640.0), now);
     write::days(&document, Mm(45.0), Mm(610.0), now);
     write::logo(&document, Mm(390.0), Mm(640.0), 0.95).context("Failed to write logo")?;
-    write::lines(&document.black_layer, false, 19);
+    write::lines(&document.layers.black, false, 19);
     let (second_page_index, layer1) = document.document.add_page(WIDTH, HEIGHT, "black");
     write::lines(
         &document

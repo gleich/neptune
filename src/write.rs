@@ -31,9 +31,9 @@ pub fn days(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) {
         let matches_weekday = weekday == i as u32;
         rectangle(
             if matches_weekday {
-                &document.black_layer
+                &document.layers.black
             } else {
-                &document.white_layer
+                &document.layers.white
             },
             x + offset,
             y,
@@ -42,9 +42,9 @@ pub fn days(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) {
             weekday == i as u32,
         );
         if matches_weekday {
-            &document.white_layer
+            &document.layers.white
         } else {
-            &document.black_layer
+            &document.layers.black
         }
         .use_text(
             day.to_string(),
@@ -59,21 +59,21 @@ pub fn days(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) {
                 4.0
             }) + offset,
             y + Mm(4.0),
-            &document.title_font,
+            &document.fonts.gainsborough_sans_regular,
         );
     }
 }
 
 pub fn name(document: &Document, x: Mm, y: Mm) {
-    document.white_layer.use_text(
+    document.layers.white.use_text(
         "Matt Gleich",
         80.0,
         x + Mm(5.0),
         y + Mm(5.0),
-        &document.title_font,
+        &document.fonts.gainsborough_sans_regular,
     );
 
-    rectangle(&document.black_layer, x, y, Mm(130.0), Mm(26.0), true);
+    rectangle(&document.layers.black, x, y, Mm(130.0), Mm(26.0), true);
 }
 
 pub fn giant_date(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) -> f64 {
@@ -84,26 +84,26 @@ pub fn giant_date(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) -> f
         ordinal_offset += 7.0;
     }
     rectangle(
-        &document.black_layer,
+        &document.layers.black,
         x,
         y,
         Mm(30.0) + Mm(ordinal_offset),
         Mm(160.0),
         true,
     );
-    document.white_layer.use_text(
+    document.layers.white.use_text(
         num_str,
         350.0,
         x + Mm(5.0),
         y + Mm(40.0),
-        &document.giant_font,
+        &document.fonts.computer_modern_italic,
     );
-    document.white_layer.use_text(
+    document.layers.white.use_text(
         Ordinal(now).suffix(),
         60.0,
         x + Mm(ordinal_offset),
         y + Mm(100.0),
-        &document.giant_font,
+        &document.fonts.computer_modern_italic,
     );
     ordinal_offset
 }
@@ -116,7 +116,7 @@ pub fn logo(document: &Document, x: Mm, y: Mm, scale: f64) -> Result<()> {
     )
     .context("Failed to convert codecs to Image")?;
     image.add_to_layer(
-        document.black_layer.to_owned(),
+        document.layers.black.to_owned(),
         ImageTransform {
             translate_x: Some(x),
             translate_y: Some(y),
@@ -182,22 +182,22 @@ pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool, lines: usize)
 }
 
 pub fn date_information(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) {
-    document.black_layer.use_text(
+    document.layers.black.use_text(
         date.format("%B").to_string(),
         125.0,
         x,
         y + Mm(100.0),
-        &document.title_font,
+        &document.fonts.gainsborough_sans_regular,
     );
-    document.black_layer.use_text(
+    document.layers.black.use_text(
         date.year().to_string(),
         125.0,
         x,
         y + Mm(70.0),
-        &document.title_font,
+        &document.fonts.gainsborough_sans_regular,
     );
     rectangle(
-        &document.black_layer,
+        &document.layers.black,
         x,
         y + Mm(63.0),
         Mm(160.0),
@@ -208,7 +208,7 @@ pub fn date_information(document: &Document, x: Mm, y: Mm, date: DateTime<Local>
     let week_of_year = date.format("%U").to_string().parse::<i32>().unwrap();
     let year = date.year();
     let month = date.month();
-    document.black_layer.use_text(
+    document.layers.black.use_text(
         format!(
             "{} day of year [{}%]",
             Ordinal(day_of_year),
@@ -217,9 +217,9 @@ pub fn date_information(document: &Document, x: Mm, y: Mm, date: DateTime<Local>
         50.0,
         x,
         y + Mm(45.0),
-        &document.title_font,
+        &document.fonts.gainsborough_sans_regular,
     );
-    document.black_layer.use_text(
+    document.layers.black.use_text(
         format!(
             "{} day of month [{}%]",
             Ordinal(date.day()),
@@ -243,9 +243,9 @@ pub fn date_information(document: &Document, x: Mm, y: Mm, date: DateTime<Local>
         50.0,
         x,
         y + Mm(30.0),
-        &document.title_font,
+        &document.fonts.gainsborough_sans_regular,
     );
-    document.black_layer.use_text(
+    document.layers.black.use_text(
         format!(
             "{} day of week [{}%]",
             Ordinal(date.weekday() as usize + 1),
@@ -254,9 +254,9 @@ pub fn date_information(document: &Document, x: Mm, y: Mm, date: DateTime<Local>
         50.0,
         x,
         y + Mm(15.0),
-        &document.title_font,
+        &document.fonts.gainsborough_sans_regular,
     );
-    document.black_layer.use_text(
+    document.layers.black.use_text(
         format!(
             "{} week of year [{}%]",
             Ordinal(week_of_year),
@@ -265,6 +265,6 @@ pub fn date_information(document: &Document, x: Mm, y: Mm, date: DateTime<Local>
         50.0,
         x,
         y,
-        &document.title_font,
+        &document.fonts.gainsborough_sans_regular,
     );
 }

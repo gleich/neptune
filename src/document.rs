@@ -1,6 +1,7 @@
 use std::{
     fs::{self, File},
     io::BufWriter,
+    path::Path,
     process::Command,
 };
 
@@ -16,10 +17,18 @@ pub struct Document {
     pub document: PdfDocumentReference,
     pub first_page_index: PdfPageIndex,
     pub first_page_reference: PdfPageReference,
-    pub title_font: IndirectFontRef,
-    pub giant_font: IndirectFontRef,
-    pub black_layer: PdfLayerReference,
-    pub white_layer: PdfLayerReference,
+    pub fonts: Fonts,
+    pub layers: Layers,
+}
+
+pub struct Fonts {
+    pub computer_modern_italic: IndirectFontRef,
+    pub gainsborough_sans_regular: IndirectFontRef,
+}
+
+pub struct Layers {
+    pub black: PdfLayerReference,
+    pub white: PdfLayerReference,
 }
 
 pub const WIDTH: Mm = Mm(595.0);
@@ -29,31 +38,32 @@ impl Document {
     pub fn new(name: &str) -> Result<Self> {
         let (doc, first_page_index, layer1) = PdfDocument::new(name, WIDTH, HEIGHT, "black");
         let first_page_reference = doc.get_page(first_page_index);
-        let title_font = doc
-            .add_external_font(
-                File::open("assets/GainsboroughSans-Regular.otf")
-                    .context("Failed to read font file")?,
-            )
-            .context("Failed to read font")?;
-        let giant_font = doc
-            .add_external_font(File::open("assets/cmunti.ttf").context("Failed to read font file")?)
-            .context("Failed to read font")?;
         let black_layer = first_page_reference.get_layer(layer1);
         let white_layer = first_page_reference.add_layer("white");
 
         black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.0, None)));
         white_layer.set_fill_color(Color::Greyscale(Greyscale::new(1.0, None)));
 
+        let assets_folder = Path::new("assets");
+
         Ok(Self {
             name: name.to_string(),
             filename: format!("{}.pdf", name),
-            document: doc,
             first_page_index,
             first_page_reference,
-            title_font,
-            giant_font,
-            black_layer,
-            white_layer,
+            fonts: Fonts {
+                computer_modern_italic: doc.add_external_font(File::open(
+                    assets_folder.join("Computer Modern").join("italic.ttf"),
+                )?)?,
+                gainsborough_sans_regular: doc.add_external_font(File::open(
+                    assets_folder.join("Gainsborough Sans").join("regular.otf"),
+                )?)?,
+            },
+            layers: Layers {
+                black: black_layer,
+                white: white_layer,
+            },
+            document: doc,
         })
     }
 
