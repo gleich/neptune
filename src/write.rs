@@ -25,7 +25,7 @@ pub fn rectangle(layer: &PdfLayerReference, x: Mm, y: Mm, width: Mm, height: Mm,
 }
 
 pub fn days(document: &Document, x: Mm, y: Mm, date: DateTime<Local>) {
-    let weekday = date.weekday().num_days_from_sunday() - 1;
+    let weekday = date.weekday().num_days_from_monday();
     for (i, day) in vec!["M", "T", "W", "T", "F", "S", "S"].iter().enumerate() {
         let offset = Mm(30.0 * i as f64 + 1.0);
         let matches_weekday = weekday == i as u32;

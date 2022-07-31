@@ -1,5 +1,6 @@
 use rocket::response::{self, Responder};
 
+#[derive(Debug)]
 pub struct Error(anyhow::Error);
 pub type Result<T = ()> = std::result::Result<T, Error>;
 

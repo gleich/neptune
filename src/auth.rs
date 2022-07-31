@@ -4,6 +4,7 @@ use rocket::{
 };
 use std::env;
 
+#[derive(Debug, Default)]
 pub struct NeptuneToken(String);
 
 #[rocket::async_trait]
