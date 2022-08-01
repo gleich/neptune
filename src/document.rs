@@ -2,7 +2,7 @@ use std::{
     fs::{self, File},
     io::BufWriter,
     path::Path,
-    process::Command,
+    process::{self, Command},
 };
 
 use anyhow::{ensure, Context, Result};
