@@ -2,7 +2,7 @@ use std::{
     fs::{self, File},
     io::BufWriter,
     path::Path,
-    process::{self, Command},
+    process::Command,
 };
 
 use anyhow::{ensure, Context, Result};
@@ -67,7 +67,7 @@ impl Document {
         })
     }
 
-    pub fn upload(self, folder: String) -> Result<()> {
+    pub fn upload(self, folder: &str) -> Result<()> {
         self.document
             .save(&mut BufWriter::new(
                 File::create(&self.filename)

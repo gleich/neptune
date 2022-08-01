@@ -38,7 +38,7 @@ pub fn route(_token: NeptuneToken) -> Result<String> {
 
     // uploading document
     document
-        .upload(now.format("/Daily Logs/%B/").to_string())
+        .upload(now.format("/Daily Logs/%B/").to_string().as_str())
         .context("Failed to upload document")?;
     Ok(format!("Created daily log: {}", name))
 }

@@ -61,8 +61,9 @@ pub fn route(_token: NeptuneToken, inputs: Json<InputData>) -> Result<String> {
         true,
         25,
     );
+    let full_path = format!("/Notes/{}", &inputs.folder);
     document
-        .upload(format!("/Notes/{}", &inputs.folder))
+        .upload(&full_path)
         .expect("Failed to upload document");
-    Ok(format!("Created {} in {}", inputs.name, inputs.folder))
+    Ok(format!("Created {} in {}", inputs.name, full_path))
 }
