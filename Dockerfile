@@ -17,4 +17,11 @@ RUN go build . \
     && mv rmapi /bin/
 WORKDIR /
 
+# set timezone to New York
+RUN apt-get update && \
+    apt-get install -yq tzdata && \
+    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+ENV TZ="America/New_York"
+
 CMD ["neptune"]
