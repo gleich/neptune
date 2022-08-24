@@ -130,7 +130,7 @@ pub fn logo(document: &Document, x: Mm, y: Mm, scale: f64) -> Result<()> {
 }
 
 pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool, lines: usize) {
-    let (mut x1, x2) = (
+    let (x1, x2) = (
         if cornell_style { 200.0 } else { 100.0 },
         if cornell_style { 550.0 } else { 495.0 },
     );
@@ -160,10 +160,6 @@ pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool, lines: usize)
     black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.40, None)));
     for i in 1..lines {
         let y = (i * spacing + bottom_margin) as f64;
-        if i == lines - 1 && cornell_style {
-            x1 = 400.0;
-            black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.0, None)));
-        }
         let line = Line {
             points: vec![
                 (Point::new(Mm(x1), Mm(y)), false),
