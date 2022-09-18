@@ -157,7 +157,7 @@ pub fn lines(black_layer: &PdfLayerReference, cornell_style: bool, lines: usize)
         };
         black_layer.add_shape(line);
     }
-    black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.40, None)));
+    black_layer.set_fill_color(Color::Greyscale(Greyscale::new(0.70, None)));
     for i in 1..lines {
         let y = (i * spacing + bottom_margin) as f64;
         let line = Line {
