@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::BufWriter;
 use std::path::PathBuf;
+use std::process::exit;
 use std::{env, fs};
 
 use anyhow::{Context, Result};
@@ -45,5 +46,15 @@ impl Document {
 			))
 			.context("Failed to save document")?;
 		Ok(())
+	}
+
+	pub fn debug_save(self) -> Result<()> {
+		self.properties
+			.document
+			.save(&mut BufWriter::new(
+				File::create("test.pdf").context("Failed to create file")?,
+			))
+			.context("Failed to save document")?;
+		exit(0);
 	}
 }
