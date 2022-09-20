@@ -52,7 +52,7 @@ impl Fonts {
 
 impl Properties {
 	pub fn new<T: Into<String>>(name: T) -> Self {
-		let (doc, first_page_index, layer1) = PdfDocument::new(name, Mm(595.0), Mm(842.0), "black");
+		let (doc, first_page_index, layer1) = PdfDocument::new(name, Mm(445.0), Mm(594.0), "black");
 		let first_page_reference = doc.get_page(first_page_index);
 		let black_layer = first_page_reference.get_layer(layer1);
 		let white_layer = first_page_reference.add_layer("white");

@@ -930,6 +930,7 @@ dependencies = [
  "lazy_static",
  "ordinal",
  "printpdf",
+ "rand",
  "rocket",
  "serde",
 ]
