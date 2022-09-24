@@ -1,18 +1,20 @@
 use std::fs::File;
 use std::path::PathBuf;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use lazy_static::lazy_static;
-use printpdf::{
-	Color, Greyscale, IndirectFontRef, Mm, PdfDocument, PdfDocumentReference, PdfLayerReference,
-	PdfPageIndex, PdfPageReference,
-};
+use printpdf::*;
+
+pub const WIDTH: f64 = 445.0;
+pub const HEIGHT: f64 = 594.0;
 
 /// Only works with TTF fonts
 pub struct Fonts {
 	pub computer_modern_regular: IndirectFontRef,
 	pub computer_modern_italic: IndirectFontRef,
 }
+
+pub struct Images {}
 
 pub enum FontWeight {
 	Regular,
@@ -50,9 +52,29 @@ impl Fonts {
 	}
 }
 
+impl Images {
+	pub fn load_logo() -> Result<Image> {
+		Self::load_image(&ASSETS_FOLDER.join("logo.jpg")).context("Failed to load logo")
+	}
+
+	// image must be JPEG
+	pub fn load_image(path: &PathBuf) -> Result<Image> {
+		let mut file = File::open(path).context(format!("Failed to load {}", path.display()))?;
+		Ok(Image::try_from(
+			image_crate::codecs::jpeg::JpegDecoder::new(&mut file)
+				.context(format!("Failed to decode png for {}", path.display()))?,
+		)
+		.context(format!(
+			"Failed to convert codecs to Image for {}",
+			path.display()
+		))?)
+	}
+}
+
 impl Properties {
 	pub fn new<T: Into<String>>(name: T) -> Self {
-		let (doc, first_page_index, layer1) = PdfDocument::new(name, Mm(445.0), Mm(594.0), "black");
+		let (doc, first_page_index, layer1) =
+			PdfDocument::new(name, Mm(WIDTH), Mm(HEIGHT), "black");
 		let first_page_reference = doc.get_page(first_page_index);
 		let black_layer = first_page_reference.get_layer(layer1);
 		let white_layer = first_page_reference.add_layer("white");

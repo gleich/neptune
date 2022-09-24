@@ -1,7 +1,6 @@
 use std::fs::File;
 use std::io::BufWriter;
 use std::path::PathBuf;
-use std::process::exit;
 use std::{env, fs};
 
 use anyhow::{Context, Result};
@@ -55,6 +54,6 @@ impl Document {
 				File::create("test.pdf").context("Failed to create file")?,
 			))
 			.context("Failed to save document")?;
-		exit(0);
+		Ok(())
 	}
 }
