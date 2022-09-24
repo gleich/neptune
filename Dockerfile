@@ -24,4 +24,7 @@ RUN apt-get update && \
     dpkg-reconfigure -f noninteractive tzdata
 ENV TZ="America/New_York"
 
+# installing gs
+RUN apt-get install -yq ghostscript
+
 CMD ["neptune"]
