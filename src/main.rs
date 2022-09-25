@@ -4,5 +4,6 @@ mod cmd;
 mod document;
 
 fn main() {
-	raw_run("Introduction to Limits", Class::MATH171).expect("Failed to generate a raw run");
+	raw_run("Introduction to Limits", Class::MATH171, "Testing")
+		.expect("Failed to generate a raw run");
 }

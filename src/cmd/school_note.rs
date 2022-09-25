@@ -1,12 +1,13 @@
+use std::path::PathBuf;
+
 use anyhow::Result;
-use chrono::{DateTime, Datelike, Local};
+use chrono::{Datelike, Local};
 use genpdf::style::Style;
-use genpdf::{elements, render, Alignment, Element, Margins, Position, Scale};
+use genpdf::{elements, Alignment, Element, Margins, Position, Scale};
 use ordinal::Ordinal;
 use task_log::task;
 
 use crate::document;
-use crate::document::debug_save;
 
 pub enum Class {
 	MATH171,
@@ -16,18 +17,27 @@ pub enum Class {
 impl ToString for Class {
 	fn to_string(&self) -> String {
 		match self {
-			Self::MATH171 => String::from("MATH 171: Calculus A"),
-			Self::MEDG101 => String::from("MEDG 110: Human Biology 1"),
+			Self::MATH171 => format!("{}: Calculus A", self.short_name()),
+			Self::MEDG101 => format!("{}: Human Biology 1", self.short_name()),
 		}
 	}
 }
 
-pub fn raw_run<T: Into<String>>(name: T, class: Class) -> Result<()> {
+impl Class {
+	pub fn short_name(&self) -> String {
+		match self {
+			Self::MATH171 => String::from("MATH 171"),
+			Self::MEDG101 => String::from("MEDG 110"),
+		}
+	}
+}
+
+pub fn raw_run<T: Into<String>>(name: T, class: Class, folder: T) -> Result<()> {
 	let mut document = task("Creating document", || {
 		document::new("hello world").expect("Failed to create document")
 	});
 	let name: String = name.into();
-	// title page
+
 	task("Creating title page", || {
 		document.push(
 			elements::Image::from_path("assets/logo.jpg")
@@ -68,7 +78,6 @@ pub fn raw_run<T: Into<String>>(name: T, class: Class) -> Result<()> {
 		);
 	});
 
-	// writing page
 	task("Writing pages", || {
 		let note_img = elements::Image::from_path("assets/note.jpg")
 			.expect("Failed to load logo")
@@ -86,6 +95,24 @@ pub fn raw_run<T: Into<String>>(name: T, class: Class) -> Result<()> {
 		}
 	});
 
-	debug_save(document).expect("Failed to save document");
+	let uncompressed_filename = format!("{} uncompressed.pdf", name);
+	let filename = format!("{}.pdf", name);
+	task("Saving document", || {
+		document::save(document, &uncompressed_filename).expect("Failed to save document");
+	});
+	task("Compressing PDF file", || {
+		document::compress(&uncompressed_filename, &filename).expect("Failed to compress document");
+	});
+	task("Uploading file", || {
+		document::upload(
+			filename,
+			PathBuf::from("Notes")
+				.join("College")
+				.join(class.short_name())
+				.join(folder.into()),
+		)
+		.expect("Failed to upload document");
+	});
+
 	Ok(())
 }
