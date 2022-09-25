@@ -1,13 +1,8 @@
-use document::Document;
-use task_log::task;
+use cmd::school_note::{raw_run, Class};
 
+mod cmd;
 mod document;
 
 fn main() {
-	let document = task("Creating document", || {
-		Document::new("hello world").expect("Failed to create document")
-	});
-	document
-		.debug_save()
-		.expect("Failed to debug save document");
+	raw_run("Introduction to Limits", Class::MATH171).expect("Failed to generate a raw run");
 }
