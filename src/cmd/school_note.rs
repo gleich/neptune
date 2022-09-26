@@ -2,34 +2,37 @@ use std::path::PathBuf;
 
 use anyhow::Result;
 use chrono::{Datelike, Local};
+use dialoguer::theme::ColorfulTheme;
+use dialoguer::{Input, Select};
 use genpdf::style::Style;
 use genpdf::{elements, Alignment, Element, Margins, Position, Scale};
 use ordinal::Ordinal;
+use strum::VariantNames;
+use strum_macros::{EnumVariantNames, FromRepr};
 use task_log::task;
 
 use crate::document;
 
-pub enum Class {
-	MATH171,
-	MEDG101,
-}
-
-impl ToString for Class {
-	fn to_string(&self) -> String {
-		match self {
-			Self::MATH171 => format!("{}: Calculus A", self.short_name()),
-			Self::MEDG101 => format!("{}: Human Biology 1", self.short_name()),
-		}
-	}
-}
-
-impl Class {
-	pub fn short_name(&self) -> String {
-		match self {
-			Self::MATH171 => String::from("MATH 171"),
-			Self::MEDG101 => String::from("MEDG 110"),
-		}
-	}
+pub fn cli_run() {
+	let theme = ColorfulTheme::default();
+	let name: String = Input::with_theme(&theme)
+		.with_prompt("Name")
+		.interact_text()
+		.expect("Failed to ask user for document name");
+	let class = Class::from_repr(
+		Select::with_theme(&theme)
+			.with_prompt("Class")
+			.items(Class::VARIANTS)
+			.default(0)
+			.interact()
+			.expect("Failed to ask user for class"),
+	)
+	.unwrap();
+	let folder: String = Input::with_theme(&theme)
+		.with_prompt("Folder")
+		.interact_text()
+		.expect("Failed to ask user for folder name");
+	raw_run(name, class, folder).unwrap();
 }
 
 pub fn raw_run<T: Into<String>>(name: T, class: Class, folder: T) -> Result<()> {
@@ -115,4 +118,28 @@ pub fn raw_run<T: Into<String>>(name: T, class: Class, folder: T) -> Result<()> 
 	});
 
 	Ok(())
+}
+
+#[derive(EnumVariantNames, FromRepr)]
+pub enum Class {
+	MATH171,
+	MEDG101,
+}
+
+impl ToString for Class {
+	fn to_string(&self) -> String {
+		match self {
+			Self::MATH171 => format!("{}: Calculus A", self.short_name()),
+			Self::MEDG101 => format!("{}: Human Biology 1", self.short_name()),
+		}
+	}
+}
+
+impl Class {
+	pub fn short_name(&self) -> String {
+		match self {
+			Self::MATH171 => String::from("MATH 171"),
+			Self::MEDG101 => String::from("MEDG 110"),
+		}
+	}
 }

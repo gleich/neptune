@@ -1,9 +1,13 @@
-use cmd::school_note::{raw_run, Class};
+use cmd::school_note::cli_run;
 
+mod cli;
 mod cmd;
 mod document;
 
 fn main() {
-	raw_run("Introduction to Limits", Class::MATH171, "Testing")
-		.expect("Failed to generate a raw run");
+	let matches = cli::setup().get_matches();
+	match matches.subcommand() {
+		Some(("school-note", _)) => cli_run(),
+		_ => unreachable!(),
+	}
 }
