@@ -10,7 +10,7 @@ use super::note;
 
 pub fn cli_run() {
 	let options = Options::read().unwrap();
-	let theme: &ColorfulTheme = &*DIALOGUER_THEME;
+	let theme: &ColorfulTheme = &DIALOGUER_THEME;
 	let book: &Book = options
 		.books
 		.get(

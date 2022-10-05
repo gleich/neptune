@@ -64,14 +64,10 @@ pub fn new<T: Into<String>>(name: T, subject: &str, folder: T) -> Result<()> {
 			document.push(elements::PageBreak::new());
 			document.push(note_img.clone());
 			document.push(
-				elements::Paragraph::new(format!(
-					"{} | {} | Matt Gleich",
-					name,
-					subject.to_string()
-				))
-				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(25).italic())
-				.padded(10),
+				elements::Paragraph::new(format!("{} | {} | Matt Gleich", name, subject))
+					.aligned(Alignment::Center)
+					.styled(Style::new().with_font_size(25).italic())
+					.padded(10),
 			);
 		}
 	});

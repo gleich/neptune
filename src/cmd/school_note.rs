@@ -9,7 +9,7 @@ use crate::options::{Class, Options};
 
 pub fn cli_run() {
 	let options = Options::read().unwrap();
-	let theme: &ColorfulTheme = &*DIALOGUER_THEME;
+	let theme: &ColorfulTheme = &DIALOGUER_THEME;
 	let name: String = Input::with_theme(theme)
 		.with_prompt("Name")
 		.interact_text()
