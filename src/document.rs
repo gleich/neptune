@@ -17,6 +17,7 @@ pub fn new<T: Into<String>>(name: T) -> Result<Document> {
 	Ok(core_document)
 }
 
+#[allow(dead_code)]
 pub fn debug_save(document: Document) -> Result<()> {
 	let uncompressed_filename = "debug_uncompressed.pdf";
 	task("Saving PDF", || -> Result<()> {

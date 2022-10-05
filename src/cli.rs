@@ -1,6 +1,4 @@
-use clap::{value_parser, Arg, Command};
-
-use crate::cmd::school_note::Class;
+use clap::Command;
 
 pub fn setup() -> Command<'static> {
 	Command::new("neptune")
