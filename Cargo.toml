@@ -8,8 +8,12 @@ anyhow = "1.0.65"
 chrono = "0.4.22"
 clap = "3.2.22"
 dialoguer = { version = "0.10.2", features = ["fuzzy-select"] }
+directories = "4.0.1"
 genpdf = { version = "0.2.0", features = ["images"] }
+lazy_static = "1.4.0"
 ordinal = "0.3.2"
+serde = { version = "1.0.145", features = ["derive"] }
 strum = "0.24.1"
 strum_macros = "0.24.3"
 task_log = "0.1.4"
+toml = "0.5.9"

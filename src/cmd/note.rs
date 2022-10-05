@@ -9,7 +9,7 @@ use task_log::task;
 
 use crate::document;
 
-pub fn new<T: Into<String>>(name: T, subject: String, folder: T) -> Result<()> {
+pub fn new<T: Into<String>>(name: T, subject: &str, folder: T) -> Result<()> {
 	let name: String = name.into();
 	let mut document = task("Creating document", || {
 		document::new(&name).expect("Failed to create document")

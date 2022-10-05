@@ -5,16 +5,17 @@ use dialoguer::{Input, Select};
 use strum::VariantNames;
 use strum_macros::{EnumVariantNames, FromRepr};
 
+use crate::cli::DIALOGUER_THEME;
 use crate::cmd::note;
 
 pub fn cli_run() {
-	let theme = ColorfulTheme::default();
-	let name: String = Input::with_theme(&theme)
+	let theme: &ColorfulTheme = &*DIALOGUER_THEME;
+	let name: String = Input::with_theme(theme)
 		.with_prompt("Name")
 		.interact_text()
 		.expect("Failed to ask user for document name");
 	let class = Class::from_repr(
-		Select::with_theme(&theme)
+		Select::with_theme(theme)
 			.with_prompt("Class")
 			.items(Class::VARIANTS)
 			.default(0)
@@ -22,14 +23,14 @@ pub fn cli_run() {
 			.expect("Failed to ask user for class"),
 	)
 	.unwrap();
-	let folder: String = Input::with_theme(&theme)
+	let folder: String = Input::with_theme(theme)
 		.with_prompt("Folder")
 		.allow_empty(true)
 		.interact_text()
 		.expect("Failed to ask user for folder name");
 	note::new(
 		name,
-		class.to_string(),
+		&class.to_string(),
 		PathBuf::from("College")
 			.join("Notes")
 			.join(class.short_name())

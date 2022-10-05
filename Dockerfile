@@ -1,7 +1,8 @@
-FROM rust as BUILDER
+FROM rust:nightly as BUILDER
 
+WORKDIR /
 COPY . app
-WORKDIR app
+WORKDIR /app
 
 RUN cargo build --release
 
