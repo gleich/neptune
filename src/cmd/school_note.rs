@@ -24,6 +24,7 @@ pub fn cli_run() {
 	.unwrap();
 	let folder: String = Input::with_theme(&theme)
 		.with_prompt("Folder")
+		.allow_empty(true)
 		.interact_text()
 		.expect("Failed to ask user for folder name");
 	note::new(
@@ -44,6 +45,7 @@ pub fn cli_run() {
 pub enum Class {
 	MATH171,
 	MEDG101,
+	PHIL101,
 }
 
 impl ToString for Class {
@@ -51,6 +53,7 @@ impl ToString for Class {
 		match self {
 			Self::MATH171 => format!("{}: Calculus A", self.short_name()),
 			Self::MEDG101 => format!("{}: Human Biology 1", self.short_name()),
+			Self::PHIL101 => format!("{}: Intro to Philosophy", self.short_name()),
 		}
 	}
 }
@@ -60,6 +63,7 @@ impl Class {
 		match self {
 			Self::MATH171 => String::from("MATH 171"),
 			Self::MEDG101 => String::from("MEDG 110"),
+			Self::PHIL101 => String::from("PHIL 101"),
 		}
 	}
 }
