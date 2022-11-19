@@ -11,6 +11,7 @@ jobs:
         with:
           toolchain: nightly
           override: true
+          components: rustfmt
       - run: cargo fmt --check
   release:
     runs-on: ubuntu-latest
@@ -20,4 +21,5 @@ jobs:
         with:
           toolchain: nightly
           override: true
+          components: rustfmt
       - run: cargo clippy -- -D warnings
