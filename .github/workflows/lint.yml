@@ -1,4 +1,4 @@
-name: build
+name: lint
 
 on: push
 
@@ -13,7 +13,7 @@ jobs:
           override: true
           components: rustfmt
       - run: cargo fmt --check
-  release:
+  clippy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
