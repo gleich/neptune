@@ -68,24 +68,18 @@ pub fn compress(uncompressed_filename: &str, filename: &str) -> Result<()> {
 
 pub fn upload<T: Into<String>>(filename: T, folder: PathBuf) -> Result<()> {
 	let filename: String = filename.into();
-	let mut process = Command::new("rmapi")
+	Command::new("rmapi")
 		.arg("mkdir")
 		.arg(&folder)
-		.spawn()
+		.output()
 		.context("Failed to spawn process to make parent directory")?;
-	process.stdout.take();
-	let mut status = process.wait().context("Failed to make parent directory")?;
-	ensure!(status.success());
 
-	process = Command::new("rmapi")
+	Command::new("rmapi")
 		.arg("put")
 		.arg(&filename)
 		.arg(&folder)
-		.spawn()
+		.output()
 		.context("Failed to spawn process to upload document")?;
-	process.stdout.take();
-	status = process.wait().context("Failed to make parent directory")?;
-	ensure!(status.success());
 
 	fs::remove_file(filename)
 		.context("Failed to remove file after upload")
