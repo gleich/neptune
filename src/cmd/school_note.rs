@@ -10,7 +10,7 @@ use crate::cmd::note;
 use crate::options::{Class, Options};
 
 pub fn cli_run(args: &ArgMatches) {
-	let options = Options::read().unwrap();
+	let options = Options::read().expect("Failed to read options");
 
 	let (name, class, folder) = ask(args, &options).expect("Failed to ask for inputs");
 	note::new(

@@ -50,4 +50,14 @@ pub fn setup(options: &Options) -> Command {
 				.about("Create a book/article note")
 				.alias("article-note"),
 		)
+		.subcommand(
+			Command::new("options")
+				.about("Get values from the configuration file")
+				.hide(true)
+				.arg(
+					Arg::new("option")
+						.required(true)
+						.value_parser(["class.names"]),
+				),
+		)
 }
