@@ -55,7 +55,7 @@ pub fn compress(uncompressed_filename: &str, filename: &str) -> Result<()> {
 			"-dMonoImageDownsampleType=/Bicubic",
 			"-dMonoImageResolution=135",
 		])
-		.arg(format!("-sOutputFile={}", filename))
+		.arg(format!("-sOutputFile={filename}"))
 		.arg(uncompressed_filename)
 		.spawn()
 		.context("Failed to run compression ghostscript")?

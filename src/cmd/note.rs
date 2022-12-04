@@ -9,8 +9,8 @@ use task_log::task;
 
 use crate::document;
 
-pub fn new<T: Into<String>>(name: T, subject: &str, folder: T) -> Result<()> {
-	let name: String = name.into();
+pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
+	let name: String = name.to_string();
 	let mut document = task("Creating document", || {
 		document::new(&name).expect("Failed to create document")
 	});
@@ -64,7 +64,7 @@ pub fn new<T: Into<String>>(name: T, subject: &str, folder: T) -> Result<()> {
 			document.push(elements::PageBreak::new());
 			document.push(note_img.clone());
 			document.push(
-				elements::Paragraph::new(format!("{} | {} | Matt Gleich", name, subject))
+				elements::Paragraph::new(format!("{name} | {subject} | Matt Gleich"))
 					.aligned(Alignment::Center)
 					.styled(Style::new().with_font_size(25).italic())
 					.padded(10),
@@ -72,8 +72,8 @@ pub fn new<T: Into<String>>(name: T, subject: &str, folder: T) -> Result<()> {
 		}
 	});
 
-	let uncompressed_filename = format!("{} uncompressed.pdf", name);
-	let filename = format!("{}.pdf", name);
+	let uncompressed_filename = format!("{name} uncompressed.pdf");
+	let filename = format!("{name}.pdf");
 	task("Saving document", || {
 		document::save(document, &uncompressed_filename).expect("Failed to save document");
 	});
@@ -81,7 +81,7 @@ pub fn new<T: Into<String>>(name: T, subject: &str, folder: T) -> Result<()> {
 		document::compress(&uncompressed_filename, &filename).expect("Failed to compress document");
 	});
 	task("Uploading file", || {
-		document::upload(filename, PathBuf::from(folder.into()))
+		document::upload(filename, PathBuf::from(folder.to_string()))
 			.expect("Failed to upload document");
 	});
 

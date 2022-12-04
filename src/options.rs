@@ -11,7 +11,7 @@ pub struct Options {
 	pub books: Vec<Book>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct Class {
 	pub id: String,
 	pub name: String,

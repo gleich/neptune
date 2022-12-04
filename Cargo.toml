@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.65"
 chrono = "0.4.22"
-clap = "3.2.22"
+clap = { version = "4.0.29", features = ["string"] }
 dialoguer = { version = "0.10.2", features = ["fuzzy-select"] }
 directories = "4.0.1"
 genpdf = { version = "0.2.0", features = ["images"] }
