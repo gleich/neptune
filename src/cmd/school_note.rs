@@ -9,17 +9,28 @@ use crate::cli::DIALOGUER_THEME;
 use crate::cmd::note;
 use crate::options::{Class, Options};
 
+pub const CATEGORIES: [&str; 3] = ["Notes", "Practice", "Assessment"];
+
+#[derive(Debug)]
+pub struct Inputs {
+	pub name: String,
+	pub class: Class,
+	pub folder: String,
+	pub category: String,
+}
+
 pub fn cli_run(args: &ArgMatches) {
 	let options = Options::read().expect("Failed to read options");
 
-	let (name, class, folder) = ask(args, &options).expect("Failed to ask for inputs");
+	let inputs = ask(args, &options).expect("Failed to ask for inputs");
 	note::new(
-		name,
-		&class.to_string(),
+		inputs.name,
+		&inputs.class.to_string(),
 		PathBuf::from("College")
-			.join("Notes")
-			.join(&class.id)
-			.join(folder)
+			.join("Semester 2")
+			.join(inputs.category)
+			.join(inputs.class.id)
+			.join(inputs.folder)
 			.to_str()
 			.unwrap()
 			.to_string(),
@@ -27,7 +38,7 @@ pub fn cli_run(args: &ArgMatches) {
 	.unwrap();
 }
 
-fn ask<'a>(args: &ArgMatches, options: &'a Options) -> Result<(String, &'a Class, String)> {
+fn ask<'a>(args: &ArgMatches, options: &'a Options) -> Result<Inputs> {
 	let theme: &ColorfulTheme = &DIALOGUER_THEME;
 
 	// getting name of document
@@ -40,6 +51,24 @@ fn ask<'a>(args: &ArgMatches, options: &'a Options) -> Result<(String, &'a Class
 				.interact_text()
 				.context("Failed to ask user for document name")?;
 			input_name
+		}
+	};
+
+	// getting the category
+	let category_arg: Option<&String> = args.get_one("category");
+	let category = match category_arg {
+		Some(x) => x.to_owned(),
+		None => {
+			CATEGORIES
+				.get(
+					Select::with_theme(theme)
+						.with_prompt("Category")
+						.items(&CATEGORIES)
+						.interact()
+						.context("asking for category failed")?,
+				)
+				.unwrap()
+				.to_string()
 		}
 	};
 
@@ -71,5 +100,10 @@ fn ask<'a>(args: &ArgMatches, options: &'a Options) -> Result<(String, &'a Class
 		}
 	};
 
-	Ok((name, class.unwrap(), folder))
+	Ok(Inputs {
+		name,
+		class: class.unwrap().to_owned(),
+		folder,
+		category,
+	})
 }

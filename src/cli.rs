@@ -43,6 +43,13 @@ pub fn setup(options: &Options) -> Command {
 						.long("folder")
 						.short('f')
 						.help("Name of the folder"),
+				)
+				.arg(
+					Arg::new("category")
+						.long("category")
+						.short('c')
+						.help("Category of the document")
+						.value_parser(["Notes", "Practice", "Assessment"]),
 				),
 		)
 		.subcommand(
