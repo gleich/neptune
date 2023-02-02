@@ -4,16 +4,16 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.65"
-chrono = "0.4.22"
-clap = { version = "4.0.29", features = ["string"] }
-dialoguer = { version = "0.10.2", features = ["fuzzy-select"] }
+anyhow = "1.0.68"
+chrono = "0.4.23"
+clap = { version = "4.1.1", features = ["string"] }
+dialoguer = { version = "0.10.3", features = ["fuzzy-select"] }
 directories = "4.0.1"
 genpdf = { version = "0.2.0", features = ["images"] }
 lazy_static = "1.4.0"
 ordinal = "0.3.2"
-serde = { version = "1.0.145", features = ["derive"] }
+serde = { version = "1.0.152", features = ["derive"] }
 strum = "0.24.1"
 strum_macros = "0.24.3"
-task_log = "0.1.4"
-toml = "0.5.9"
+task_log = "0.1.6"
+toml = "0.5.11"
