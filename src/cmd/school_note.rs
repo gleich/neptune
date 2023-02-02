@@ -9,7 +9,7 @@ use crate::cli::DIALOGUER_THEME;
 use crate::cmd::note;
 use crate::options::{Class, Options};
 
-pub const CATEGORIES: [&str; 3] = ["Notes", "Practice", "Assessment"];
+pub const CATEGORIES: [&str; 4] = ["Notes", "Practice", "Assessment", "Worksheets"];
 
 #[derive(Debug)]
 pub struct Inputs {
