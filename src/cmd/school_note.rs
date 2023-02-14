@@ -38,7 +38,7 @@ pub fn cli_run(args: &ArgMatches) {
 	.unwrap();
 }
 
-fn ask<'a>(args: &ArgMatches, options: &'a Options) -> Result<Inputs> {
+fn ask(args: &ArgMatches, options: &Options) -> Result<Inputs> {
 	let theme: &ColorfulTheme = &DIALOGUER_THEME;
 
 	// getting name of document
