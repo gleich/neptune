@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use anyhow::{Context, Result};
 use clap::ArgMatches;
 use dialoguer::theme::ColorfulTheme;
-use dialoguer::{Input, Select};
+use dialoguer::{FuzzySelect, Input};
 
 use crate::cli::DIALOGUER_THEME;
 use crate::cmd::note;
@@ -61,7 +61,7 @@ fn ask(args: &ArgMatches, options: &Options) -> Result<Inputs> {
 		None => {
 			CATEGORIES
 				.get(
-					Select::with_theme(theme)
+					FuzzySelect::with_theme(theme)
 						.with_prompt("Category")
 						.items(&CATEGORIES)
 						.interact()
@@ -78,7 +78,7 @@ fn ask(args: &ArgMatches, options: &Options) -> Result<Inputs> {
 		Some(x) => options.classes.iter().find(|c| &c.name == x),
 		None => {
 			options.classes.get(
-				Select::with_theme(theme)
+				FuzzySelect::with_theme(theme)
 					.with_prompt("Class")
 					.items(options.classes.as_slice())
 					.interact()
