@@ -47,7 +47,7 @@ pub fn setup(options: &Options) -> Command {
 				.arg(
 					Arg::new("category")
 						.long("category")
-						.short('c')
+						.short('t')
 						.help("Category of the document")
 						.value_parser(["Notes", "Practice", "Assessment"]),
 				),

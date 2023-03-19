@@ -1,6 +1,6 @@
-use std::fs;
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{exit, Command};
+use std::{env, fs};
 
 use anyhow::{ensure, Context, Result};
 use genpdf::{fonts, Document, Size};
@@ -8,8 +8,8 @@ use task_log::task;
 
 pub fn new<T: Into<String>>(name: T) -> Result<Document> {
 	let name: String = name.into();
-	let default_font = fonts::from_files("assets/fonts/", "Computer Modern", None)
-		.expect("Failed to load default font");
+	let default_font =
+		fonts::from_files("assets/fonts/", "Inter", None).expect("Failed to load default font");
 	let mut core_document = genpdf::Document::new(default_font);
 	core_document.set_title(&name);
 	core_document.set_minimal_conformance();
@@ -20,14 +20,14 @@ pub fn new<T: Into<String>>(name: T) -> Result<Document> {
 #[allow(dead_code)]
 pub fn debug_save(document: Document) -> Result<()> {
 	let uncompressed_filename = "debug_uncompressed.pdf";
-	task("Saving PDF", || -> Result<()> {
+	task("Saving debug version of PDF", || -> Result<()> {
 		save(document, uncompressed_filename)
 	})?;
 	task(
 		"Compressing output PDF with ghostscript",
 		|| -> Result<()> { compress(uncompressed_filename, "debug.pdf") },
 	)?;
-	Ok(())
+	exit(0);
 }
 
 pub fn save<T: Into<String>>(document: Document, uncompressed_filename: T) -> Result<()> {

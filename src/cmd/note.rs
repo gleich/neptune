@@ -25,13 +25,13 @@ pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
 		document.push(
 			elements::Paragraph::new(&name)
 				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(50))
+				.styled(Style::new().with_font_size(50).bold())
 				.padded(Margins::trbl(285, 70, 10, 70)),
 		);
 		document.push(
 			elements::Paragraph::new(subject.to_string())
 				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(25).italic())
+				.styled(Style::new().with_font_size(25))
 				.padded(Margins::trbl(0, 0, 35, 0)),
 		);
 		document.push(
@@ -42,16 +42,16 @@ pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
 		let now = Local::now();
 		document.push(
 			elements::Paragraph::new(
-				now.format(&format!("%A, %B %e{}, %Y", Ordinal(now.day()).suffix()))
+				now.format(&format!("%A %B %e{}, %Y", Ordinal(now.day()).suffix()))
 					.to_string(),
 			)
 			.aligned(Alignment::Center)
-			.styled(Style::new().with_font_size(30).italic()),
+			.styled(Style::new().with_font_size(30)),
 		);
 		document.push(
 			elements::Paragraph::new(now.format("%l:%M:%S %p").to_string())
 				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(30).italic()),
+				.styled(Style::new().with_font_size(25)),
 		);
 	});
 
@@ -64,19 +64,26 @@ pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
 			document.push(elements::PageBreak::new());
 			document.push(note_img.clone());
 			document.push(
-				elements::Paragraph::new(format!("{name} | {subject} | Matt Gleich"))
-					.aligned(Alignment::Center)
-					.styled(Style::new().with_font_size(25).italic())
-					.padded(10),
+				elements::Paragraph::new(&name)
+					.aligned(Alignment::Right)
+					.styled(Style::new().with_font_size(17))
+					.padded(Margins::trbl(29, 13, 0, 0)),
+			);
+			document.push(
+				elements::Paragraph::new(subject)
+					.aligned(Alignment::Right)
+					.styled(Style::new().with_font_size(17))
+					.padded(Margins::trbl(0, 13, 0, 0)),
 			);
 		}
 	});
 
 	let uncompressed_filename = format!("{name} uncompressed.pdf");
 	let filename = format!("{name}.pdf");
-	task("Saving document", || {
-		document::save(document, &uncompressed_filename).expect("Failed to save document");
-	});
+
+	document::debug_save(document).expect("Failed to save document");
+	// task("Saving document", || {
+	// });
 	task("Compressing PDF file", || {
 		document::compress(&uncompressed_filename, &filename).expect("Failed to compress document");
 	});
