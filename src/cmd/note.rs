@@ -81,9 +81,9 @@ pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
 	let uncompressed_filename = format!("{name} uncompressed.pdf");
 	let filename = format!("{name}.pdf");
 
-	document::debug_save(document).expect("Failed to save document");
-	// task("Saving document", || {
-	// });
+	task("Saving document", || {
+		document::save(document, &uncompressed_filename).expect("Failed to save document");
+	});
 	task("Compressing PDF file", || {
 		document::compress(&uncompressed_filename, &filename).expect("Failed to compress document");
 	});

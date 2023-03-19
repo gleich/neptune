@@ -1,6 +1,6 @@
+use std::fs;
 use std::path::PathBuf;
 use std::process::{exit, Command};
-use std::{env, fs};
 
 use anyhow::{ensure, Context, Result};
 use genpdf::{fonts, Document, Size};
