@@ -68,9 +68,16 @@ pub fn compress(uncompressed_filename: &str, filename: &str) -> Result<()> {
 
 pub fn upload<T: Into<String>>(filename: T, folder: PathBuf) -> Result<()> {
 	let filename: String = filename.into();
+
+	let folder_string = folder.to_str().unwrap().to_string();
 	Command::new("rmapi")
 		.arg("mkdir")
-		.arg(&folder)
+		.arg(
+			folder_string
+				.chars()
+				.take(folder_string.chars().count() - 1)
+				.collect::<String>(),
+		)
 		.output()
 		.context("Failed to spawn process to make parent directory")?;
 
