@@ -2,6 +2,7 @@ use clap::{Arg, Command};
 use dialoguer::theme::ColorfulTheme;
 use lazy_static::lazy_static;
 
+use crate::cmd::school_note::CATEGORIES;
 use crate::options::Options;
 
 lazy_static! {
@@ -49,7 +50,7 @@ pub fn setup(options: &Options) -> Command {
 						.long("category")
 						.short('t')
 						.help("Category of the document")
-						.value_parser(["Notes", "Practice", "Assessment"]),
+						.value_parser(CATEGORIES),
 				),
 		)
 		.subcommand(
