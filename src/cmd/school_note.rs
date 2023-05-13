@@ -27,9 +27,8 @@ pub fn cli_run(args: &ArgMatches) {
 		inputs.name,
 		&inputs.class.to_string(),
 		PathBuf::from("College")
-			.join("Semester 2")
-			.join(inputs.category)
 			.join(inputs.class.id)
+			.join(inputs.category)
 			.join(inputs.folder)
 			.to_str()
 			.unwrap()
