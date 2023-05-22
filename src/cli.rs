@@ -58,6 +58,7 @@ pub fn setup(options: &Options) -> Command {
 				.about("Create a book/article note")
 				.alias("article-note"),
 		)
+		.subcommand(Command::new("food-log").about("Create a food log"))
 		.subcommand(
 			Command::new("options")
 				.about("Get values from the configuration file")

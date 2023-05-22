@@ -30,6 +30,52 @@ pub fn debug_save(document: Document) -> Result<()> {
 	exit(0);
 }
 
+pub fn upload<T: Into<String>>(
+	document: Document,
+	filename: T,
+	folder: PathBuf,
+	debug: bool,
+) -> Result<()> {
+	let mut filename: String = filename.into();
+	let uncompressed_filename = format!("{} uncompressed.pdf", filename);
+	if debug {
+		task("Debug saving document", || debug_save(document))?;
+	} else {
+		task(format!("Saving {}", filename), || {
+			save(document, &uncompressed_filename)
+		})?;
+		filename = format!("{}.pdf", filename);
+		task(format!("Compressing {}", filename), || {
+			compress(&uncompressed_filename, &filename)
+		})?;
+	}
+
+	task(
+		format!("Uploading {} in /{}", filename, folder.to_str().unwrap()),
+		|| -> Result<()> {
+			let filename: String = filename.into();
+
+			let folder_string = folder.to_str().unwrap().to_string();
+			Command::new("rmapi")
+				.arg("mkdir")
+				.arg(folder_string.trim_end_matches('/'))
+				.output()
+				.context("Failed to spawn process to make parent directory")?;
+
+			Command::new("rmapi")
+				.arg("put")
+				.arg(&filename)
+				.arg(&folder)
+				.output()
+				.context("Failed to spawn process to upload document")?;
+
+			fs::remove_file(filename).context("Failed to remove file after upload")?;
+			Ok(())
+		},
+	)?;
+	Ok(())
+}
+
 pub fn save<T: Into<String>>(document: Document, uncompressed_filename: T) -> Result<()> {
 	document
 		.render_to_file(uncompressed_filename.into())
@@ -63,34 +109,5 @@ pub fn compress(uncompressed_filename: &str, filename: &str) -> Result<()> {
 		.context("Failed to wait for ghostscript compression to complete")?;
 	ensure!(status.success());
 	fs::remove_file(uncompressed_filename).context("Failed to remove uncompressed PDF")?;
-	Ok(())
-}
-
-pub fn upload<T: Into<String>>(filename: T, folder: PathBuf) -> Result<()> {
-	let filename: String = filename.into();
-
-	let folder_string = folder.to_str().unwrap().to_string();
-	Command::new("rmapi")
-		.arg("mkdir")
-		.arg(
-			folder_string
-				.chars()
-				.take(folder_string.chars().count() - 1)
-				.collect::<String>(),
-		)
-		.output()
-		.context("Failed to spawn process to make parent directory")?;
-
-	Command::new("rmapi")
-		.arg("put")
-		.arg(&filename)
-		.arg(&folder)
-		.output()
-		.context("Failed to spawn process to upload document")?;
-
-	fs::remove_file(filename)
-		.context("Failed to remove file after upload")
-		.context("Failed to delete pdf")?;
-
 	Ok(())
 }

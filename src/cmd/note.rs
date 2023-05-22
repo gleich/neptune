@@ -57,7 +57,7 @@ pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
 
 	task("Writing pages", || {
 		let note_img = elements::Image::from_path("assets/note.jpg")
-			.expect("Failed to load logo")
+			.expect("Failed to load note template image")
 			.with_position(Position::new(0, -12))
 			.with_scale(Scale::new(2.1, 2.1));
 		for _ in 1..5 {
@@ -78,19 +78,8 @@ pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
 		}
 	});
 
-	let uncompressed_filename = format!("{name} uncompressed.pdf");
-	let filename = format!("{name}.pdf");
-
-	task("Saving document", || {
-		document::save(document, &uncompressed_filename).expect("Failed to save document");
-	});
-	task("Compressing PDF file", || {
-		document::compress(&uncompressed_filename, &filename).expect("Failed to compress document");
-	});
-	task("Uploading file", || {
-		document::upload(filename, PathBuf::from(folder.to_string()))
-			.expect("Failed to upload document");
-	});
+	document::upload(document, name, PathBuf::from(folder.to_string()), false)
+		.expect("Failed to upload document");
 
 	Ok(())
 }
