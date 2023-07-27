@@ -1,4 +1,4 @@
-FROM rust:nightly as BUILDER
+FROM rust:1.71.0 as BUILDER
 
 WORKDIR /
 COPY . app
