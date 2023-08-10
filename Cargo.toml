@@ -5,4 +5,8 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.72"
-rocket = "0.5.0-rc.3"
+chrono = "0.4.26"
+genpdf = {version = "0.2.0", features = ["images"]}
+ordinal = "0.3.2"
+rocket = {version  = "0.5.0-rc.3", features = ["json"]}
+task_log = "0.1.6"
