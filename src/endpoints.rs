@@ -1,21 +1,40 @@
 use std::path::Path;
+use std::sync::{Arc, Mutex};
 
 use anyhow::Context;
+use rocket::response::stream::Event;
+use rocket::response::stream::EventStream;
 use rocket::response::{self, Responder};
 use rocket::serde::json::Json;
+use rocket::serde::{Deserialize, Serialize};
+use rocket::tokio::sync::broadcast::Sender;
+use rocket::{serde, Shutdown, State};
 
 use crate::{rmapi, templates};
 
 #[post("/note", data = "<note>")]
-pub fn note(note: Json<templates::note::Note>) -> Result<String> {
-	let doc = note.create().context("Failed to create document")?;
-	rmapi::upload(
-		doc,
-		&note.name,
-		&Path::new("College").join(&note.subject).join(&note.folder),
-	)
-	.context("Failed to upload document")?;
-	Ok(String::from("Created and uploaded note!"))
+pub async fn note(note: Json<templates::note::Note>) -> EventStream![] {
+	let doc = note
+		.create()
+		.context("Failed to create document")
+		.expect("failed to create note");
+	EventStream! {
+		let note_cloned = note.clone();
+		yield Event::data("created document");
+		yield Event::data("uploading document");
+		rmapi::upload(
+			doc,
+			&note_cloned.name,
+			&Path::new("College").join(&note_cloned.subject).join(&note_cloned.folder),
+		);
+	}
+}
+
+#[derive(Debug, Clone, FromForm, Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
+pub struct Status {
+	pub message: String,
+	pub progress: u32,
 }
 
 #[derive(Debug)]
