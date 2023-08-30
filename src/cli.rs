@@ -51,6 +51,13 @@ pub fn setup(options: &Options) -> Command {
 						.short('t')
 						.help("Category of the document")
 						.value_parser(CATEGORIES),
+				)
+				.arg(
+					Arg::new("pages")
+						.long("pages")
+						.short('p')
+						.help("Number of pages for the document")
+						.value_parser(clap::value_parser!(u32)),
 				),
 		)
 		.subcommand(

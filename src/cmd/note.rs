@@ -9,7 +9,7 @@ use task_log::task;
 
 use crate::document;
 
-pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
+pub fn new<T: ToString>(name: T, subject: &str, folder: T, page_count: u32) -> Result<()> {
 	let name: String = name.to_string();
 	let mut document = task("Creating document", || {
 		document::new(&name).expect("Failed to create document")
@@ -60,7 +60,7 @@ pub fn new<T: ToString>(name: T, subject: &str, folder: T) -> Result<()> {
 			.expect("Failed to load note template image")
 			.with_position(Position::new(0, -12))
 			.with_scale(Scale::new(2.1, 2.1));
-		for _ in 1..5 {
+		for _ in 1..page_count + 1 {
 			document.push(elements::PageBreak::new());
 			document.push(note_img.clone());
 			document.push(

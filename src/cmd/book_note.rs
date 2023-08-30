@@ -33,6 +33,7 @@ pub fn cli_run() {
 			.to_str()
 			.unwrap()
 			.to_string(),
+		2,
 	)
 	.unwrap();
 }
