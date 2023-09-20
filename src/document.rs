@@ -50,30 +50,32 @@ pub fn upload<T: Into<String>>(
 		})?;
 	}
 
-	task(
-		format!("Uploading {} in /{}", filename, folder.to_str().unwrap()),
-		|| -> Result<()> {
-			let filename: String = filename.into();
-
-			let folder_string = folder.to_str().unwrap().to_string();
-			Command::new("rmapi")
-				.arg("mkdir")
-				.arg(folder_string.trim_end_matches('/'))
-				.output()
-				.context("Failed to spawn process to make parent directory")?;
-
-			Command::new("rmapi")
-				.arg("put")
-				.arg(&filename)
-				.arg(&folder)
-				.output()
-				.context("Failed to spawn process to upload document")?;
-
-			fs::remove_file(filename).context("Failed to remove file after upload")?;
-			Ok(())
-		},
-	)?;
+	Command::new("open").arg("-R").arg(filename).output().context("Failed to open file")?;
 	Ok(())
+	// task(
+	// 	format!("Uploading {} in /{}", filename, folder.to_str().unwrap()),
+	// 	|| -> Result<()> {
+	// 		let filename: String = filename.into();
+
+	// 		let folder_string = folder.to_str().unwrap().to_string();
+	// 		Command::new("rmapi")
+	// 			.arg("mkdir")
+	// 			.arg(folder_string.trim_end_matches('/'))
+	// 			.output()
+	// 			.context("Failed to spawn process to make parent directory")?;
+
+	// 		Command::new("rmapi")
+	// 			.arg("put")
+	// 			.arg(&filename)
+	// 			.arg(&folder)
+	// 			.output()
+	// 			.context("Failed to spawn process to upload document")?;
+
+	// 		fs::remove_file(filename).context("Failed to remove file after upload")?;
+	// 		Ok(())
+	// 	},
+	// )?;
+	// Ok(())
 }
 
 pub fn save<T: Into<String>>(document: Document, uncompressed_filename: T) -> Result<()> {

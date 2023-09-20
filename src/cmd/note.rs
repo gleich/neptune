@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use anyhow::Result;
+use anyhow::{Result, Context};
 use chrono::{Datelike, Local};
 use genpdf::style::Style;
 use genpdf::{elements, Alignment, Element, Margins, Position, Scale};

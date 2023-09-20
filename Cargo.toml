@@ -11,6 +11,7 @@ dialoguer = { version = "0.10.3", features = ["fuzzy-select"] }
 directories = "4.0.1"
 genpdf = { version = "0.2.0", features = ["images"] }
 lazy_static = "1.4.0"
+open = "5.0.0"
 ordinal = "0.3.2"
 serde = { version = "1.0.157", features = ["derive"] }
 strum = "0.24.1"
