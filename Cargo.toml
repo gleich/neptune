@@ -6,7 +6,10 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.72"
 chrono = "0.4.26"
+clap = { version = "4.4.7", features = ["string"] }
+dirs = "5.0.1"
 genpdf = {version = "0.2.0", features = ["images"]}
+lazy_static = "1.4.0"
 ordinal = "0.3.2"
-rocket = {version  = "0.5.0-rc.3", features = ["json"]}
+serde = { version = "1.0.192", features = ["derive"] }
 task_log = "0.1.6"

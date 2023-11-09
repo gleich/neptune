@@ -2,12 +2,9 @@ use anyhow::{Context, Result};
 use chrono::{Datelike, Local};
 use genpdf::{elements, style::Style, Alignment, Document, Element, Margins, Position, Scale};
 use ordinal::Ordinal;
-use rocket::serde::Deserialize;
 
 use crate::document;
 
-#[derive(Deserialize)]
-#[serde(crate = "rocket::serde")]
 pub struct Note {
 	pub name: String,
 	pub folder: String,
@@ -19,7 +16,7 @@ impl Note {
 		let mut doc = document::new(&self.name).context("Failed to create document for note")?;
 		self.add_title_page(&mut doc)
 			.context("Failed to load title page")?;
-		self.add_main_pages(&mut doc)
+		self.add_main_page(&mut doc)
 			.context("Failed to add main pages")?;
 		Ok(doc)
 	}
@@ -65,27 +62,25 @@ impl Note {
 		Ok(())
 	}
 
-	pub fn add_main_pages(self: &Self, doc: &mut Document) -> Result<()> {
+	pub fn add_main_page(self: &Self, doc: &mut Document) -> Result<()> {
 		let note_img = elements::Image::from_path("assets/note.jpg")
 			.context("Failed to load note template image")?
 			.with_position(Position::new(0, -12))
 			.with_scale(Scale::new(2.1, 2.1));
-		for _ in 1..5 {
-			doc.push(elements::PageBreak::new());
-			doc.push(note_img.clone());
-			doc.push(
-				elements::Paragraph::new(&self.name)
-					.aligned(Alignment::Right)
-					.styled(Style::new().with_font_size(17))
-					.padded(Margins::trbl(29, 13, 0, 0)),
-			);
-			doc.push(
-				elements::Paragraph::new(&self.subject)
-					.aligned(Alignment::Right)
-					.styled(Style::new().with_font_size(17))
-					.padded(Margins::trbl(0, 13, 0, 0)),
-			);
-		}
+		doc.push(elements::PageBreak::new());
+		doc.push(note_img.clone());
+		doc.push(
+			elements::Paragraph::new(&self.name)
+				.aligned(Alignment::Right)
+				.styled(Style::new().with_font_size(17))
+				.padded(Margins::trbl(29, 13, 0, 0)),
+		);
+		doc.push(
+			elements::Paragraph::new(&self.subject)
+				.aligned(Alignment::Right)
+				.styled(Style::new().with_font_size(17))
+				.padded(Margins::trbl(0, 13, 0, 0)),
+		);
 		Ok(())
 	}
 }

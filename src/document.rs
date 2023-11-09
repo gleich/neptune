@@ -13,3 +13,8 @@ pub fn new(name: &String) -> Result<Document> {
 	core_document.set_paper_size(Size::new(445, 594));
 	Ok(core_document)
 }
+pub fn save(name: &String, doc: Document) -> Result<()> {
+	doc.render_to_file(format!("{}.pdf", name))
+		.context("Failed to output file to PDF");
+	Ok(())
+}
