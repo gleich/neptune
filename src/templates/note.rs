@@ -8,7 +8,6 @@ use crate::document;
 
 pub struct Note {
 	pub name: String,
-	pub folder: String,
 	pub subject: String,
 }
 
