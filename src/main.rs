@@ -2,7 +2,6 @@ use templates::note::Note;
 
 mod document;
 mod endpoints;
-mod goodnotes;
 mod templates;
 
 fn main() {
@@ -12,5 +11,6 @@ fn main() {
 		subject: String::from("CSCI 240"),
 	};
 	let document = note.create().expect("Failed to create note");
-	document::save(&note.name, document).expect("Failed to save document");
+	let saved_path = document::save(&note.name, document).expect("Failed to save document");
+	document::open(&saved_path).expect("Failed to open document");
 }

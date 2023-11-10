@@ -2,6 +2,7 @@ use anyhow::{Context, Result};
 use chrono::{Datelike, Local};
 use genpdf::{elements, style::Style, Alignment, Document, Element, Margins, Position, Scale};
 use ordinal::Ordinal;
+use task_log::task;
 
 use crate::document;
 
@@ -22,65 +23,69 @@ impl Note {
 	}
 
 	pub fn add_title_page(self: &Self, doc: &mut Document) -> Result<()> {
-		doc.push(
-			elements::Image::from_path("assets/logo.jpg")
-				.context("Failed to load logo")?
-				.with_position(Position::new(165, 150))
-				.with_scale(Scale::new(0.9, 0.9)),
-		);
-		doc.push(
-			elements::Paragraph::new(&self.name)
+		Ok(task("Writing title page", || -> Result<()> {
+			doc.push(
+				elements::Image::from_path("assets/logo.jpg")
+					.context("Failed to load logo")?
+					.with_position(Position::new(165, 150))
+					.with_scale(Scale::new(0.9, 0.9)),
+			);
+			doc.push(
+				elements::Paragraph::new(&self.name)
+					.aligned(Alignment::Center)
+					.styled(Style::new().with_font_size(50).bold())
+					.padded(Margins::trbl(285, 70, 10, 70)),
+			);
+			doc.push(
+				elements::Paragraph::new(&self.subject.to_string())
+					.aligned(Alignment::Center)
+					.styled(Style::new().with_font_size(25))
+					.padded(Margins::trbl(0, 0, 35, 0)),
+			);
+			doc.push(
+				elements::Paragraph::new("Matt Gleich")
+					.aligned(Alignment::Center)
+					.styled(Style::new().with_font_size(35)),
+			);
+			let now = Local::now();
+			doc.push(
+				elements::Paragraph::new(
+					now.format(&format!("%A %B %e{}, %Y", Ordinal(now.day()).suffix()))
+						.to_string(),
+				)
 				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(50).bold())
-				.padded(Margins::trbl(285, 70, 10, 70)),
-		);
-		doc.push(
-			elements::Paragraph::new(&self.subject.to_string())
-				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(25))
-				.padded(Margins::trbl(0, 0, 35, 0)),
-		);
-		doc.push(
-			elements::Paragraph::new("Matt Gleich")
-				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(35)),
-		);
-		let now = Local::now();
-		doc.push(
-			elements::Paragraph::new(
-				now.format(&format!("%A %B %e{}, %Y", Ordinal(now.day()).suffix()))
-					.to_string(),
-			)
-			.aligned(Alignment::Center)
-			.styled(Style::new().with_font_size(30)),
-		);
-		doc.push(
-			elements::Paragraph::new(now.format("%l:%M:%S %p").to_string())
-				.aligned(Alignment::Center)
-				.styled(Style::new().with_font_size(25)),
-		);
-		Ok(())
+				.styled(Style::new().with_font_size(30)),
+			);
+			doc.push(
+				elements::Paragraph::new(now.format("%l:%M:%S %p").to_string())
+					.aligned(Alignment::Center)
+					.styled(Style::new().with_font_size(25)),
+			);
+			Ok(())
+		})?)
 	}
 
 	pub fn add_main_page(self: &Self, doc: &mut Document) -> Result<()> {
-		let note_img = elements::Image::from_path("assets/note.jpg")
-			.context("Failed to load note template image")?
-			.with_position(Position::new(0, -12))
-			.with_scale(Scale::new(2.1, 2.1));
-		doc.push(elements::PageBreak::new());
-		doc.push(note_img.clone());
-		doc.push(
-			elements::Paragraph::new(&self.name)
-				.aligned(Alignment::Right)
-				.styled(Style::new().with_font_size(17))
-				.padded(Margins::trbl(29, 13, 0, 0)),
-		);
-		doc.push(
-			elements::Paragraph::new(&self.subject)
-				.aligned(Alignment::Right)
-				.styled(Style::new().with_font_size(17))
-				.padded(Margins::trbl(0, 13, 0, 0)),
-		);
-		Ok(())
+		Ok(task("Writing main page", || -> Result<()> {
+			let note_img = elements::Image::from_path("assets/note.jpg")
+				.context("Failed to load note template image")?
+				.with_position(Position::new(0, -12))
+				.with_scale(Scale::new(2.1, 2.1));
+			doc.push(elements::PageBreak::new());
+			doc.push(note_img.clone());
+			doc.push(
+				elements::Paragraph::new(&self.name)
+					.aligned(Alignment::Right)
+					.styled(Style::new().with_font_size(17))
+					.padded(Margins::trbl(29, 13, 0, 0)),
+			);
+			doc.push(
+				elements::Paragraph::new(&self.subject)
+					.aligned(Alignment::Right)
+					.styled(Style::new().with_font_size(17))
+					.padded(Margins::trbl(0, 13, 0, 0)),
+			);
+			Ok(())
+		})?)
 	}
 }
