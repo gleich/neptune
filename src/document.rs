@@ -17,7 +17,7 @@ pub fn new(name: &String) -> Result<Document> {
 	Ok(core_document)
 }
 pub fn save(name: &String, doc: Document) -> Result<PathBuf> {
-	Ok(task("Saving PDF", || -> Result<PathBuf> {
+	task("Saving PDF", || -> Result<PathBuf> {
 		let data_folder = dirs::data_dir()
 			.context("Failed to find data directory")?
 			.join("neptune");
@@ -36,7 +36,7 @@ pub fn save(name: &String, doc: Document) -> Result<PathBuf> {
 			.context("Failed to output file to PDF")
 			.context("Failed to render content to file")?;
 		Ok(path)
-	})?)
+	})
 }
 
 pub fn open(path: &Path) -> Result<()> {

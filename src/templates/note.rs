@@ -13,7 +13,7 @@ pub struct Note {
 }
 
 impl Note {
-	pub fn create(self: &Self) -> Result<Document> {
+	pub fn create(&self) -> Result<Document> {
 		let mut doc = document::new(&self.name).context("Failed to create document for note")?;
 		self.add_title_page(&mut doc)
 			.context("Failed to load title page")?;
@@ -22,8 +22,8 @@ impl Note {
 		Ok(doc)
 	}
 
-	pub fn add_title_page(self: &Self, doc: &mut Document) -> Result<()> {
-		Ok(task("Writing title page", || -> Result<()> {
+	pub fn add_title_page(&self, doc: &mut Document) -> Result<()> {
+		task("Writing title page", || -> Result<()> {
 			doc.push(
 				elements::Image::from_path("assets/logo.jpg")
 					.context("Failed to load logo")?
@@ -37,7 +37,7 @@ impl Note {
 					.padded(Margins::trbl(285, 70, 10, 70)),
 			);
 			doc.push(
-				elements::Paragraph::new(&self.subject.to_string())
+				elements::Paragraph::new(self.subject.to_string())
 					.aligned(Alignment::Center)
 					.styled(Style::new().with_font_size(25))
 					.padded(Margins::trbl(0, 0, 35, 0)),
@@ -62,11 +62,11 @@ impl Note {
 					.styled(Style::new().with_font_size(25)),
 			);
 			Ok(())
-		})?)
+		})
 	}
 
-	pub fn add_main_page(self: &Self, doc: &mut Document) -> Result<()> {
-		Ok(task("Writing main page", || -> Result<()> {
+	pub fn add_main_page(&self, doc: &mut Document) -> Result<()> {
+		task("Writing main page", || -> Result<()> {
 			let note_img = elements::Image::from_path("assets/note.jpg")
 				.context("Failed to load note template image")?
 				.with_position(Position::new(0, -12))
@@ -86,6 +86,6 @@ impl Note {
 					.padded(Margins::trbl(0, 13, 0, 0)),
 			);
 			Ok(())
-		})?)
+		})
 	}
 }
