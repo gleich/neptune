@@ -4,7 +4,6 @@ use dialoguer::{FuzzySelect, Input};
 use templates::note::Note;
 
 mod document;
-mod endpoints;
 mod templates;
 
 fn main() {
