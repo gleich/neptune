@@ -1,12 +1,12 @@
 use std::fs;
-use std::path::PathBuf;
-use std::process::{exit, Command};
+use std::path::{Path, PathBuf};
+use std::process::Command;
 
-use anyhow::{ensure, Context, Result};
+use anyhow::{Context, Result};
 use genpdf::{fonts, Document, Size};
 use task_log::task;
 
-pub fn new<T: Into<String>>(name: T) -> Result<Document> {
+pub fn new(name: &String) -> Result<Document> {
 	let name: String = name.into();
 	let default_font =
 		fonts::from_files("assets/fonts/", "Inter", None).expect("Failed to load default font");
@@ -16,100 +16,44 @@ pub fn new<T: Into<String>>(name: T) -> Result<Document> {
 	core_document.set_paper_size(Size::new(445, 594));
 	Ok(core_document)
 }
+pub fn save(name: &String, doc: Document) -> Result<PathBuf> {
+	task("Saving PDF", || -> Result<PathBuf> {
+		let data_folder = dirs::data_dir()
+			.context("Failed to find data directory")?
+			.join("neptune");
+		let documents_folder = data_folder.join("documents");
+		if !data_folder.exists() {
+			fs::create_dir_all(data_folder).context("Failed to create data directory")?;
+		}
+		// clear out documents folder
+		if documents_folder.exists() {
+			fs::remove_dir_all(&documents_folder).context("Failed to delete documents folder")?;
+		}
+		fs::create_dir_all(&documents_folder).context("Failed to create documents folder")?;
 
-#[allow(dead_code)]
-pub fn debug_save(document: Document) -> Result<()> {
-	let uncompressed_filename = "debug_uncompressed.pdf";
-	task("Saving debug version of PDF", || -> Result<()> {
-		save(document, uncompressed_filename)
-	})?;
+		let path = documents_folder.join(format!("{}.pdf", name));
+		doc.render_to_file(documents_folder.join(format!("{}.pdf", name)))
+			.context("Failed to output file to PDF")
+			.context("Failed to render content to file")?;
+		Ok(path)
+	})
+}
+
+pub fn open(path: &Path) -> Result<()> {
 	task(
-		"Compressing output PDF with ghostscript",
-		|| -> Result<()> { compress(uncompressed_filename, "debug.pdf") },
+		format!(
+			"Opening {} in GoodNotes",
+			path.file_name().unwrap().to_str().unwrap()
+		),
+		|| -> Result<()> {
+			Command::new("open")
+				.arg("-a")
+				.arg("GoodNotes.app")
+				.arg(path)
+				.output()
+				.context("Failed to run open command")?;
+			Ok(())
+		},
 	)?;
-	exit(0);
-}
-
-pub fn upload<T: Into<String>>(
-	document: Document,
-	filename: T,
-	folder: PathBuf,
-	debug: bool,
-) -> Result<()> {
-	let mut filename: String = filename.into();
-	let uncompressed_filename = format!("{} uncompressed.pdf", filename);
-	if debug {
-		task("Debug saving document", || debug_save(document))?;
-	} else {
-		task(format!("Saving {}", filename), || {
-			save(document, &uncompressed_filename)
-		})?;
-		filename = format!("{}.pdf", filename);
-		task(format!("Compressing {}", filename), || {
-			compress(&uncompressed_filename, &filename)
-		})?;
-	}
-
-	Command::new("open").arg("-R").arg(filename).output().context("Failed to open file")?;
-	Ok(())
-	// task(
-	// 	format!("Uploading {} in /{}", filename, folder.to_str().unwrap()),
-	// 	|| -> Result<()> {
-	// 		let filename: String = filename.into();
-
-	// 		let folder_string = folder.to_str().unwrap().to_string();
-	// 		Command::new("rmapi")
-	// 			.arg("mkdir")
-	// 			.arg(folder_string.trim_end_matches('/'))
-	// 			.output()
-	// 			.context("Failed to spawn process to make parent directory")?;
-
-	// 		Command::new("rmapi")
-	// 			.arg("put")
-	// 			.arg(&filename)
-	// 			.arg(&folder)
-	// 			.output()
-	// 			.context("Failed to spawn process to upload document")?;
-
-	// 		fs::remove_file(filename).context("Failed to remove file after upload")?;
-	// 		Ok(())
-	// 	},
-	// )?;
-	// Ok(())
-}
-
-pub fn save<T: Into<String>>(document: Document, uncompressed_filename: T) -> Result<()> {
-	document
-		.render_to_file(uncompressed_filename.into())
-		.context("Failed to render to file")?;
-	Ok(())
-}
-
-pub fn compress(uncompressed_filename: &str, filename: &str) -> Result<()> {
-	let status = Command::new("gs")
-		.args([
-			"-q",
-			"-dBATCH",
-			"-dSAFER",
-			"-dNOPAUSE",
-			"-sDEVICE=pdfwrite",
-			"-dCompatibilityLevel=1.4",
-			"-dPDFSETTINGS=/ebook",
-			"-dAutoRotatePages=/None",
-			"-dColorImageDownsampleType=/Bicubic",
-			"-dColorImageResolution=135",
-			"-dGrayImageDownsampleType=/Bicubic",
-			"-dGrayImageResolution=135",
-			"-dMonoImageDownsampleType=/Bicubic",
-			"-dMonoImageResolution=135",
-		])
-		.arg(format!("-sOutputFile={filename}"))
-		.arg(uncompressed_filename)
-		.spawn()
-		.context("Failed to run compression ghostscript")?
-		.wait()
-		.context("Failed to wait for ghostscript compression to complete")?;
-	ensure!(status.success());
-	fs::remove_file(uncompressed_filename).context("Failed to remove uncompressed PDF")?;
 	Ok(())
 }
