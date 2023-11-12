@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use chrono::{Datelike, Local};
-use genpdf::{elements, style::Style, Alignment, Document, Element, Margins, Position, Scale};
+use genpdf::style::Style;
+use genpdf::{elements, Alignment, Document, Element, Margins, Position, Scale};
 use ordinal::Ordinal;
 use task_log::task;
 

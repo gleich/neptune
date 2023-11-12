@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
-use dialoguer::{theme::ColorfulTheme, FuzzySelect, Input};
+use dialoguer::theme::ColorfulTheme;
+use dialoguer::{FuzzySelect, Input};
 use templates::note::Note;
 
 mod document;
