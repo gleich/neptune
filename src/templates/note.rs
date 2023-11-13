@@ -25,7 +25,7 @@ impl Note {
 	pub fn add_title_page(&self, doc: &mut Document) -> Result<()> {
 		task("Writing title page", || -> Result<()> {
 			doc.push(
-				elements::Image::from_path("assets/logo.jpg")
+				elements::Image::from_path("/Users/matt/src/neptune/assets/logo.jpg")
 					.context("Failed to load logo")?
 					.with_position(Position::new(165, 150))
 					.with_scale(Scale::new(0.9, 0.9)),
@@ -67,7 +67,7 @@ impl Note {
 
 	pub fn add_main_page(&self, doc: &mut Document) -> Result<()> {
 		task("Writing main page", || -> Result<()> {
-			let note_img = elements::Image::from_path("assets/note.jpg")
+			let note_img = elements::Image::from_path("/Users/matt/src/neptune/assets/note.jpg")
 				.context("Failed to load note template image")?
 				.with_position(Position::new(0, -12))
 				.with_scale(Scale::new(2.1, 2.1));
