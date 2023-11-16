@@ -16,6 +16,7 @@ pub fn new(name: &String) -> Result<Document> {
 	core_document.set_paper_size(Size::new(445, 594));
 	Ok(core_document)
 }
+
 pub fn save(name: &String, doc: Document) -> Result<PathBuf> {
 	task("Saving PDF", || -> Result<PathBuf> {
 		let data_folder = dirs::data_dir()
