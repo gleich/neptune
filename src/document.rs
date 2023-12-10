@@ -8,8 +8,9 @@ use task_log::task;
 
 pub fn new(name: &String) -> Result<Document> {
 	let name: String = name.into();
-	let default_font = fonts::from_files("/Users/matt/src/neptune/assets/fonts/", "Inter", None)
-		.expect("Failed to load default font");
+	let default_font =
+		fonts::from_files("/Users/matt/src/neptune/assets/fonts/", "Helvetica", None)
+			.expect("Failed to load default font");
 	let mut core_document = genpdf::Document::new(default_font);
 	core_document.set_title(&name);
 	core_document.set_minimal_conformance();
@@ -36,7 +37,7 @@ pub fn save(name: &String, doc: Document) -> Result<PathBuf> {
 		doc.render_to_file(documents_folder.join(format!("{}.pdf", name)))
 			.context("Failed to output file to PDF")
 			.context("Failed to render content to file")?;
-		Ok(path)
+		Ok(path.into())
 	})
 }
 

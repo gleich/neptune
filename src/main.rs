@@ -21,7 +21,12 @@ fn ask() -> Result<Note> {
 		.interact_text()
 		.context("Failed to ask user for document name")?;
 
-	let subjects = ["COMM 142", "MATH 190", "PHYS 211A", "UWRT 150", "CSCI 243"];
+	let subjects = [
+		"Introduction to Technical Communication [COMM 142]",
+		"University Physics 1A [PHYS 211A]",
+		"First Year Writing: Writing Seminar [UWRT 150]",
+		"The Mechanics of Programming [CSCI 243]",
+	];
 	let subject = subjects
 		.get(
 			FuzzySelect::with_theme(theme)
