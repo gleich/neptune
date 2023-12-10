@@ -27,7 +27,7 @@ impl Note {
 			let use_small_font = self.name.len() > 34;
 			let note_img = elements::Image::from_path("/Users/matt/src/neptune/assets/note.jpg")
 				.context("Failed to load note template image")?
-				.with_position(Position::new(0, -12))
+				.with_position(Position::new(0, -14))
 				.with_scale(Scale::new(2.1, 2.1));
 			doc.push(note_img.clone());
 			doc.push(
@@ -80,7 +80,7 @@ impl Note {
 						.bold()
 						.with_color(text_color),
 				)
-				.padded(Margins::trbl(-7, 23, 0, 0)),
+				.padded(Margins::trbl(-7, 13, 0, 0)),
 			);
 			Ok(())
 		})

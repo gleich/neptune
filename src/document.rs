@@ -14,7 +14,7 @@ pub fn new(name: &String) -> Result<Document> {
 	let mut core_document = genpdf::Document::new(default_font);
 	core_document.set_title(&name);
 	core_document.set_minimal_conformance();
-	core_document.set_paper_size(Size::new(445, 594));
+	core_document.set_paper_size(Size::new(435, 590));
 	Ok(core_document)
 }
 
