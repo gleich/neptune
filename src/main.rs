@@ -22,7 +22,6 @@ fn ask() -> Result<Note> {
 		.context("Failed to ask user for document name")?;
 
 	let subjects = [
-		"Introduction to Technical Communication [COMM 142]",
 		"University Physics 1A [PHYS 211A]",
 		"First Year Writing: Writing Seminar [UWRT 150]",
 		"The Mechanics of Programming [CSCI 243]",
